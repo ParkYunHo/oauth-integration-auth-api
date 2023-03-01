@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "3.0.3"
@@ -28,6 +29,7 @@ allprojects {
     }
 }
 
+// 하위 프로젝트 공통 세팅
 subprojects {
     apply {
         plugin("kotlin")
@@ -49,4 +51,18 @@ subprojects {
     }
 }
 
+project(":auth") {
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
 
+    bootJar.enabled = true
+    jar.enabled = false
+}
+
+project(":res") {
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
+
+    bootJar.enabled = true
+    jar.enabled = false
+}

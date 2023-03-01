@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class ResApplication
 
 fun main(args: Array<String>) {
+    System.setProperty("spring.config.name", "application-res")
     runApplication<ResApplication>(*args)
 }
