@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <link th:href="@{/css/common.css}" rel="stylesheet">
+  <link th:href="@{/css/layout.css}" rel="stylesheet">
+</head>
+<body>
+<div class="home-container">
+  <div class="section">
+    <!-- TITLE -->
+    <div class="title-container title-theme-lg">
+      <h1>회원가입</h1>
+    </div>
+    <!-- // TITLE -->
+
+    <div class="form-container">
+      <div class="form-col">
+
+        <!-- 회원가입 입력 Form -->
+        <div class="form-pane" id="login-key-pane" style="margin-bottom: 0px !important;">
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">ID</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="userId" type="text" value="admin" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">Password</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="password" type="password" value="admin" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">Nickname</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="nickname" type="text" value="admin" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">email</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="email" type="text" value="admin" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">birthday</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="birthday" type="text" value="admin" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">gender</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="gender" type="text" value="M" />
+              </div>
+            </div>
+          </div>
+          <div class="unit">
+            <div class="unit-th">
+              <h2 class="unit-th-title">KOR Name</h2>
+            </div>
+            <div class="unit-td">
+              <div class="ui-component input-container" data-component="input">
+                <input id="korName" type="text" value="admin" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- // 회원가입 입력 Form -->
+
+        <!-- 회원가입 버튼 -->
+        <div class="form-pane">
+          <button class="btn btn-basic btn-sm btn-point-green" onclick="register.registerFunc()" style="margin-top: 10px; margin-left:20px">회원가입</button>
+        </div>
+        <!-- // 회원가입 버튼 -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/common.min.js}"></script>
+<script th:src="@{/js/layout.min.js}"></script>
+<script type="text/javascript">
+  const register = {
+    registerFunc: function() {
+      $.ajax({
+        url: '/api/login/register',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({
+          'userId': $('#userId')[0].value,
+          'password': $('#password')[0].value,
+          'nickname': $('#nickname')[0].value,
+          'email': $('#email')[0].value,
+          'birthday': $('#birthday')[0].value,
+          'gender': $('#gender')[0].value,
+          'korName': $('#korName')[0].value,
+        }),
+        async: true,
+        success: function(response){
+          console.log(response);
+          if(response.data) {
+            alert("회원가입 성공!!!!");
+          }
+        },
+        error: function(err){
+          console.log(err);
+          alert("회원가입 실패..");
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

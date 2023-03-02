@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <link th:href="@{/static/css/common.css}" rel="stylesheet">
+  <link th:href="@{/static/css/layout.css}" rel="stylesheet">
+</head>
+<body>
+  <div class="home-container">
+    <div class="section">
+      <!-- TITLE -->
+      <div class="title-container title-theme-lg">
+        <h1>로그인</h1>
+      </div>
+      <!-- // TITLE -->
+
+      <div class="form-container">
+        <div class="form-col">
+
+          <!-- 로그인 입력 Form -->
+          <div class="form-pane" id="login-key-pane" style="margin-bottom: 0px !important;">
+            <div class="unit">
+              <div class="unit-th">
+                <h2 class="unit-th-title">ID</h2>
+              </div>
+              <div class="unit-td">
+                <div class="ui-component input-container" data-component="input">
+                  <input id="userId" type="text" value="admin" />
+                </div>
+              </div>
+            </div>
+            <div class="unit">
+              <div class="unit-th">
+                <h2 class="unit-th-title">Password</h2>
+              </div>
+              <div class="unit-td">
+                <div class="ui-component input-container" data-component="input">
+                  <input id="password" type="password" value="admin" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- // 로그인 입력 Form -->
+
+          <!-- 로그인버튼 -->
+          <div class="form-pane">
+            <button class="btn btn-basic btn-sm btn-point-green" onclick="login.loginFunc()" style="margin-top: 10px; margin-left:20px">로그인</button>
+          </div>
+          <!-- // 로그인버튼 -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/static/js/common.min.js}"></script>
+  <script th:src="@{/static/js/layout.min.js}"></script>
+  <script type="text/javascript">
+    const login = {
+      loginFunc: function() {
+        $.ajax({
+          url: '/api/login/auth',
+          type: 'POST',
+          contentType: "application/json",
+          data: JSON.stringify({
+            'userId': $('#userId')[0].value,
+            'password': $('#password')[0].value,
+          }),
+          async: true,
+          success: function(response){
+            console.log(response);
+            if(response.data) {
+              alert("로그인 성공!!!!");
+            }
+          },
+          error: function(err){
+            console.log(err);
+            alert("로그인 실패..");
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
