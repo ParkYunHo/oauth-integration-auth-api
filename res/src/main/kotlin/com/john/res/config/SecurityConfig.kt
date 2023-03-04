@@ -3,6 +3,7 @@ package com.john.res.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -21,7 +22,6 @@ class SecurityConfig {
     @Bean
     fun configure(http: HttpSecurity): SecurityFilterChain =
         http
-//            .formLogin().disable()
             .formLogin()
                 .loginPage("/login")
                 .permitAll()
@@ -29,11 +29,9 @@ class SecurityConfig {
             .httpBasic().disable()
             .csrf().disable()
             .authorizeHttpRequests()
-//                .anyRequest().permitAll()
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/resources/**").permitAll()
-                .requestMatchers("/static/**").permitAll()
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/login/register").permitAll()
+                .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

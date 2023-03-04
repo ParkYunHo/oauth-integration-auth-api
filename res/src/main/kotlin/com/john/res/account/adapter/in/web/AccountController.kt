@@ -1,6 +1,7 @@
 package com.john.res.account.adapter.`in`.web
 
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.ModelAndView
 
@@ -12,10 +13,11 @@ import org.springframework.web.servlet.ModelAndView
 class AccountController {
 
     @GetMapping(value = ["/", "/login"])
-    fun login(): ModelAndView =
+    fun loginPage(): ModelAndView =
         ModelAndView("login/login")
 
     @GetMapping("/login/register")
-    fun register(): ModelAndView =
+    fun registerPage(): ModelAndView =
         ModelAndView("login/register")
+
 }
