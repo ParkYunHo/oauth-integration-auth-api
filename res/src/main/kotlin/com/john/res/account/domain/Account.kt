@@ -1,9 +1,6 @@
 package com.john.res.account.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import java.time.LocalDateTime
 
@@ -15,27 +12,30 @@ import java.time.LocalDateTime
 @Table(name = "USER_MGMT_TB")
 class Account (
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    val id: Long = -1L,
     @Column(name = "USER_ID", nullable = false)
     @Comment("사용자 ID")
-    val userId: String,
+    val userId: String? = "",
     @Column(name = "PASSWORD")
     @Comment("비밀번호")
-    val password: String,
+    val password: String? = "",
     @Column(name = "NICKNAME")
     @Comment("닉네임")
-    val nickName: String,
+    val nickName: String? = "",
     @Column(name = "EMAIL")
     @Comment("이메일")
-    val email: String,
+    val email: String? = "",
     @Column(name = "BIRTHDAY")
     @Comment("생년월일")
-    val birthday: String,
+    val birthday: String? = "",
     @Column(name = "GENDER")
     @Comment("성별")
-    val gender: String,
+    val gender: String? = "",
     @Column(name = "KOR_NAME")
     @Comment("한글명")
-    val korName: String,
+    val korName: String? = "",
     @Column(name = "UPDATED_AT")
     @Comment("업데이트일자")
     val updatedAt: LocalDateTime,
