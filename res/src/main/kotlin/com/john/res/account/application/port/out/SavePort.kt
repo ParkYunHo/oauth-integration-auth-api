@@ -1,12 +1,12 @@
-package com.john.res.account.application.port.`in`
+package com.john.res.account.application.port.out
 
 import com.john.res.account.adapter.`in`.web.dto.RegisterInput
 
 /**
  * @author yoonho
- * @since 2023.05.09
+ * @since 2023.05.10
  */
-interface RegisterUseCase {
+interface SavePort {
 
     /**
      * 회원가입 프로세스
@@ -16,5 +16,5 @@ interface RegisterUseCase {
      * @author yoonho
      * @since 2023.05.10
      */
-    fun register(input: RegisterInput): Boolean
+    fun saveUserInfo(input: RegisterInput): Boolean
 }
