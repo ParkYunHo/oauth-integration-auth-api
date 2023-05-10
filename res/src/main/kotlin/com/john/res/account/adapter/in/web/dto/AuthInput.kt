@@ -10,5 +10,6 @@ data class AuthInput(
     @field:NotBlank(message = "INVALID USER_ID")
     val userId: String,
     @field:NotBlank(message = "INVALID PASSWORD")
-    val password: String
+    val password: String,
+    val redirectUri: String? = ""
 )

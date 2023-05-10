@@ -1,8 +1,10 @@
 package com.john.res.account.adapter.`in`.page
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.servlet.ModelAndView
 
 /**
  * @author yoonho
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody
  */
 @Controller
 class LoginPageController {
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * 로그인 페이지
@@ -19,8 +22,15 @@ class LoginPageController {
      * @since 2023.05.10
      */
     @GetMapping(value = ["/login"])
-    fun loginPage(): String =
-        "login/login"
+    fun loginPage(redirectUri: String?): ModelAndView {
+        log.info(" >>> [loginPage] redirectUri: $redirectUri")
+
+        val mv = ModelAndView("login/login")
+        mv.addObject("redirectUri", redirectUri)
+
+        return mv
+    }
+
 
     /**
      * 회원가입 페이지
@@ -40,7 +50,7 @@ class LoginPageController {
      * @author yoonho
      * @since 2023.05.10
      */
-    @GetMapping("/")
+    @GetMapping(value = ["/", "/home"])
     @ResponseBody
     fun home(): String =
         "home"

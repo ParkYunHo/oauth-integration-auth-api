@@ -20,6 +20,8 @@ class ExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun methodArgumentNotValidException(e: MethodArgumentNotValidException): BaseResponse<Void> {
+        log.error(" >>> [methodArgumentNotValidException] message: ${e.message}")
+
         val message =
             if(e.message.isNullOrEmpty()) {
                 "Invalid Request Parameter"
@@ -32,6 +34,8 @@ class ExceptionHandler {
     @ExceptionHandler(NotRegisteredUserException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun notRegisteredUserException(e: NotRegisteredUserException): BaseResponse<Void> {
+        log.error(" >>> [notRegisteredUserException] message: ${e.message}")
+
         val message =
             if(e.message.isNullOrEmpty()) {
                 "Invalid Request Parameter"

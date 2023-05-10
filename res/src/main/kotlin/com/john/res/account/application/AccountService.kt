@@ -20,7 +20,7 @@ class AccountService(
 ): LoginUseCase, RegisterUseCase {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun login(input: AuthInput): Boolean =
+    override fun login(input: AuthInput) =
         findPort.findUserIdAndPassword(input)
 
     override fun register(input: RegisterInput): Boolean =

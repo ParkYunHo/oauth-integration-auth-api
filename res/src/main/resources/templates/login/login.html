@@ -56,7 +56,11 @@
 
   <script th:src="@{js/common.min.js}"></script>
   <script th:src="@{js/layout.min.js}"></script>
-  <script type="text/javascript">
+  <script type="text/javascript" th:inline="javascript">
+    //<![CDATA[
+    const redirectUri = /*[[${redirectUri}]]*/ ""
+    //]]>
+
     const login = {
       loginFunc: function() {
         $.ajax({
@@ -66,12 +70,14 @@
           data: JSON.stringify({
             'userId': $('#userId')[0].value,
             'password': $('#password')[0].value,
+            'redirectUri': redirectUri
           }),
           async: true,
           success: function(response){
             console.log(response);
             if(response.data) {
               alert("로그인 성공!!!!");
+              location.href = response.data
             }
           },
           error: function(err){
