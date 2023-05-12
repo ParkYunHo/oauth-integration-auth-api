@@ -19,9 +19,18 @@ class RegisteredClient(
     @Column(name = "ID", nullable = false)
     val id: Long = -1L,
 
-    @Column(name = "CLIENT_ID", nullable = false)
-    @Comment("클라이언트 ID")
-    val clientId: String = "",
+    @Column(name = "NATIVE_CLIENT_ID", nullable = false)
+    @Comment("Native 클라이언트 ID")
+    val nativeClientId: String = "",
+    @Column(name = "REST_CLIENT_ID", nullable = false)
+    @Comment("Rest 클라이언트 ID")
+    val restClientId: String = "",
+    @Column(name = "JS_CLIENT_ID", nullable = false)
+    @Comment("js 클라이언트 ID")
+    val jsClientId: String = "",
+    @Column(name = "ADMIN_CLIENT_ID", nullable = false)
+    @Comment("admin 클라이언트 ID")
+    val adminClientId: String = "",
     @Column(name = "CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
     val clientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
