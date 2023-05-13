@@ -21,35 +21,35 @@ class RegisteredClient(
 
     @Column(name = "NATIVE_CLIENT_ID", nullable = false)
     @Comment("Native 클라이언트 ID")
-    val nativeClientId: String = "",
+    var nativeClientId: String = "",
     @Column(name = "NATIVE_CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
-    val nativeClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    var nativeClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "REST_CLIENT_ID", nullable = false)
     @Comment("Rest 클라이언트 ID")
-    val restClientId: String = "",
+    var restClientId: String = "",
     @Column(name = "REST_CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
-    val restClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    var restClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "JS_CLIENT_ID", nullable = false)
     @Comment("js 클라이언트 ID")
-    val jsClientId: String = "",
+    var jsClientId: String = "",
     @Column(name = "JS_CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
-    val jsClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    var jsClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "ADMIN_CLIENT_ID", nullable = false)
     @Comment("admin 클라이언트 ID")
-    val adminClientId: String = "",
+    var adminClientId: String = "",
     @Column(name = "ADMIN_CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
-    val adminClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    var adminClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "CLIENT_SECRET")
     @Comment("클라이언트 SECRET")
-    val clientSecret: String? = null,
+    var clientSecret: String? = null,
     @Column(name = "CLIENT_SECRET_EXPIRES_AT")
     @Comment("클라이언트 SECRET 만료일자")
     val clientSecretExpiresAt: LocalDateTime? = null,

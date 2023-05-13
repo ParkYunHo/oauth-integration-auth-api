@@ -1,5 +1,6 @@
 package com.john.auth.client.application.port.out
 
+import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.domain.RegisteredClient
@@ -29,4 +30,14 @@ interface SavePort {
      * @since 2023.05.13
      */
     fun update(input: ClientUpdateInput): RegisteredClient
+
+    /**
+     * Client Key정보 재발급
+     *
+     * @param input [ClientReIssueInput]
+     * @return [RegisteredClient]
+     * @author yoonho
+     * @since 2023.05.13
+     */
+    fun reIssue(input: ClientReIssueInput): RegisteredClient
 }

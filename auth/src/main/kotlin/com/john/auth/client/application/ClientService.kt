@@ -1,5 +1,6 @@
 package com.john.auth.client.application
 
+import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientRegistInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
@@ -8,6 +9,7 @@ import com.john.auth.client.application.port.`in`.RegistUseCase
 import com.john.auth.client.application.port.`in`.UpdateUseCase
 import com.john.auth.client.application.port.out.DeletePort
 import com.john.auth.client.application.port.out.SavePort
+import com.john.auth.common.constants.ReIssueType
 import com.john.auth.common.utils.Base64StringKeyGenerator
 import com.john.auth.common.utils.ParseUtils
 import org.springframework.stereotype.Service
@@ -50,8 +52,8 @@ class ClientService(
             scopes = input.scopes
         )
 
-        val registeredClient = savePort.regist(entity)
-        return ParseUtils.toEntity(registeredClient)
+        val registeredClient = savePort.regist(input = entity)
+        return ParseUtils.toEntity(domain = registeredClient)
     }
 
     /**
@@ -63,8 +65,21 @@ class ClientService(
      * @since 2023.05.13
      */
     override fun update(input: ClientUpdateInput): RegisteredClientEntity {
-        val updatedClient = savePort.update(input)
-        return ParseUtils.toEntity(updatedClient)
+        val updatedClient = savePort.update(input = input)
+        return ParseUtils.toEntity(domain = updatedClient)
+    }
+
+    /**
+     * Client Key정보 재발급
+     *
+     * @param input [ClientReIssueInput]
+     * @return [RegisteredClientEntity]
+     * @author yoonho
+     * @since 2023.05.13
+     */
+    override fun reIssue(input: ClientReIssueInput): RegisteredClientEntity {
+        val updatedClient = savePort.reIssue(input = input)
+        return ParseUtils.toEntity(domain = updatedClient)
     }
 
     /**
@@ -75,5 +90,5 @@ class ClientService(
      * @since 2023.05.13
      */
     override fun delete(input: Long) =
-        deletePort.delete(input)
+        deletePort.delete(input = input)
 }
