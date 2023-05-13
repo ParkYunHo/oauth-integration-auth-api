@@ -3,6 +3,7 @@ package com.john.auth.client.adapter.`in`.web
 import com.john.auth.client.adapter.`in`.web.dto.ClientRegistInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
+import com.john.auth.client.application.port.`in`.DeleteUseCase
 import com.john.auth.client.application.port.`in`.RegistUseCase
 import com.john.auth.client.application.port.`in`.UpdateUseCase
 import com.john.auth.common.BaseResponse
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ClientController(
     private val registUseCase: RegistUseCase,
-    private val updateUseCase: UpdateUseCase
+    private val updateUseCase: UpdateUseCase,
+    private val deleteUseCase: DeleteUseCase
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -53,5 +55,12 @@ class ClientController(
         return BaseResponse.Success(data = result)
     }
 
+    @DeleteMapping("/api/client/delete/{clientId}")
+    fun delete(@PathVariable("clientId") input: Long): BaseResponse<Void> {
+        log.info(" >>> [delete] input: $input")
+
+        deleteUseCase.delete(input)
+        return BaseResponse.SuccessNoContent()
+    }
 
 }

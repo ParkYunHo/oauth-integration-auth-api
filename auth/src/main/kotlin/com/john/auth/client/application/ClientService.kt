@@ -3,8 +3,10 @@ package com.john.auth.client.application
 import com.john.auth.client.adapter.`in`.web.dto.ClientRegistInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
+import com.john.auth.client.application.port.`in`.DeleteUseCase
 import com.john.auth.client.application.port.`in`.RegistUseCase
 import com.john.auth.client.application.port.`in`.UpdateUseCase
+import com.john.auth.client.application.port.out.DeletePort
 import com.john.auth.client.application.port.out.SavePort
 import com.john.auth.common.utils.Base64StringKeyGenerator
 import com.john.auth.common.utils.ParseUtils
@@ -17,8 +19,9 @@ import java.time.LocalDateTime
  */
 @Service
 class ClientService(
-    private val savePort: SavePort
-): RegistUseCase, UpdateUseCase {
+    private val savePort: SavePort,
+    private val deletePort: DeletePort
+): RegistUseCase, UpdateUseCase, DeleteUseCase {
 
     /**
      * Client 등록
@@ -63,4 +66,14 @@ class ClientService(
         val updatedClient = savePort.update(input)
         return ParseUtils.toEntity(updatedClient)
     }
+
+    /**
+     * Client 삭제
+     *
+     * @param input [Long]
+     * @author yoonho
+     * @since 2023.05.13
+     */
+    override fun delete(input: Long) =
+        deletePort.delete(input)
 }

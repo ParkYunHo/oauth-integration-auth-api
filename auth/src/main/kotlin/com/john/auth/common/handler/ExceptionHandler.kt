@@ -2,6 +2,7 @@ package com.john.auth.common.handler
 
 import com.john.auth.common.BaseResponse
 import com.john.auth.common.exception.BadRequestException
+import com.john.auth.common.exception.NotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -60,6 +61,20 @@ class ExceptionHandler {
         val message =
             if(e.message.isNullOrEmpty()) {
                 "Invalid Request Parameter"
+            }else {
+                e.message!!
+            }
+        return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
+    }
+
+    @ExceptionHandler(NotFoundException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun notFoundException(e: NotFoundException): BaseResponse<Void> {
+        log.error(" >>> [notFoundException] message: ${e.message}")
+
+        val message =
+            if(e.message.isNullOrEmpty()) {
+                "Not Found Data"
             }else {
                 e.message!!
             }

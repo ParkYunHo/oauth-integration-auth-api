@@ -2,9 +2,11 @@ package com.john.auth.client.adapter.out
 
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
+import com.john.auth.client.application.port.out.DeletePort
 import com.john.auth.client.application.port.out.SavePort
 import com.john.auth.client.domain.RegisteredClient
 import com.john.auth.common.exception.BadRequestException
+import com.john.auth.common.exception.NotFoundException
 import com.john.auth.common.utils.ParseUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class RegisteredClientPersistenceAdapter(
     private val registeredClientRepository: RegisteredClientRepository
-): SavePort {
+): SavePort, DeletePort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
@@ -39,7 +41,6 @@ class RegisteredClientPersistenceAdapter(
         }
     }
 
-
     /**
      * Client 정보수정
      *
@@ -51,7 +52,7 @@ class RegisteredClientPersistenceAdapter(
     override fun update(input: ClientUpdateInput): RegisteredClient {
         try {
             val registeredClient = registeredClientRepository.findById(input.clientId.toLong())
-                .orElseThrow { throw BadRequestException("등록된 Client가 없습니다.") }
+                .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
 
             // ClientName 체크
             if(input.clientName != registeredClient.clientName && !input.clientName.isNullOrEmpty()) {
@@ -63,9 +64,35 @@ class RegisteredClientPersistenceAdapter(
             }
 
             return registeredClientRepository.save(registeredClient)
+        } catch (ne: NotFoundException) {
+            throw ne
+        } catch (be: BadRequestException) {
+            throw be
         } catch (e: Exception) {
             log.error(" >>> [update] Exception occurs - message: ${e.message}")
             throw BadRequestException("Client 정보수정에 실패하였습니다.")
+        }
+    }
+
+    /**
+     * Client 삭제
+     *
+     * @param input [Long]
+     * @author yoonho
+     * @since 2023.05.13
+     */
+    override fun delete(input: Long) {
+        try {
+            if(!registeredClientRepository.existsById(input)) {
+                throw NotFoundException("등록된 Client가 없습니다.")
+            }
+
+            registeredClientRepository.deleteById(input)
+        } catch (ne: NotFoundException) {
+            throw ne
+        } catch (e: Exception) {
+            log.error(" >>> [delete] Exception occurs - message: ${e.message}")
+            throw BadRequestException("Client 삭제에 실패하였습니다.")
         }
     }
 }
