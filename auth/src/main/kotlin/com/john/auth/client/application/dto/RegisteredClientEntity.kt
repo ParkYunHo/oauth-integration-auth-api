@@ -8,12 +8,16 @@ import java.time.LocalDateTime
  */
 data class RegisteredClientEntity(
     val nativeClientId: String = "",
+    val nativeClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
     val restClientId: String = "",
+    val restClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
     val jsClientId: String = "",
+    val jsClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
     val adminClientId: String = "",
-    val clientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    val adminClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+
     val clientSecret: String? = null,
-    val clientSecretExpiresAt: LocalDateTime? = null,
+    val clientSecretExpiresAt: LocalDateTime? = LocalDateTime.MAX,
     val clientName: String = "",
     val clientAuthenticationMethods: String = "",
     val authorizationGrantTypes: String = "",

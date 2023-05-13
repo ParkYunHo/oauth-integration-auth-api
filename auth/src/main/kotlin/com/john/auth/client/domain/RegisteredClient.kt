@@ -22,18 +22,30 @@ class RegisteredClient(
     @Column(name = "NATIVE_CLIENT_ID", nullable = false)
     @Comment("Native 클라이언트 ID")
     val nativeClientId: String = "",
+    @Column(name = "NATIVE_CLIENT_ID_ISSUED_AT", nullable = false)
+    @Comment("클라이언트 ID 발급일자")
+    val nativeClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "REST_CLIENT_ID", nullable = false)
     @Comment("Rest 클라이언트 ID")
     val restClientId: String = "",
+    @Column(name = "REST_CLIENT_ID_ISSUED_AT", nullable = false)
+    @Comment("클라이언트 ID 발급일자")
+    val restClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "JS_CLIENT_ID", nullable = false)
     @Comment("js 클라이언트 ID")
     val jsClientId: String = "",
+    @Column(name = "JS_CLIENT_ID_ISSUED_AT", nullable = false)
+    @Comment("클라이언트 ID 발급일자")
+    val jsClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "ADMIN_CLIENT_ID", nullable = false)
     @Comment("admin 클라이언트 ID")
     val adminClientId: String = "",
-    @Column(name = "CLIENT_ID_ISSUED_AT", nullable = false)
+    @Column(name = "ADMIN_CLIENT_ID_ISSUED_AT", nullable = false)
     @Comment("클라이언트 ID 발급일자")
-    val clientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
+    val adminClientIdIssuedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "CLIENT_SECRET")
     @Comment("클라이언트 SECRET")
@@ -44,7 +56,7 @@ class RegisteredClient(
 
     @Column(name = "CLIENT_NAME", nullable = false)
     @Comment("클라이언트 명칭")
-    val clientName: String = "",
+    var clientName: String = "",
 
     @Column(name = "CLIENT_AUTHENTICATION_METHODS", nullable = false)
     @Comment("클라이언트 인증방식")
@@ -55,7 +67,7 @@ class RegisteredClient(
 
     @Column(name = "REDIRECT_URIS")
     @Comment("인증시 리다이렉트 URIs")
-    val redirectUris: String? = null,
+    var redirectUris: String? = null,
     @Column(name = "POST_LOGOUT_REDIRECT_URIS")
     @Comment("로그아웃시 리다이렉트 URIs")
     val postLogoutRedirectUris: String? = null,
