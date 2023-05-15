@@ -14,18 +14,10 @@ spring:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
-#  security:
-#    oauth2:
-#      authorization:
-#        server:
-#          issuer-uri: http://localhost:8080
-#        provider:
-#          registration:
-#            my-client:
-#              client-id: my-client
-#              client-secret: my-secret
-#              redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-#              authorization-grant-type: authorization_code
-#              scope: user
+
+auth:
+  url:
+    login: http://localhost:8080/login
+    authorize: http://localhost:9000/oauth/authorize/code
 
 

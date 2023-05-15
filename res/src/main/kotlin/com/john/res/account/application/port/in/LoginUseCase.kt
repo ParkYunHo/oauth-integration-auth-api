@@ -12,8 +12,9 @@ interface LoginUseCase {
      * 로그인 프로세스
      *
      * @param input [AuthInput]
+     * @return [String]
      * @author yoonho
      * @since 2023.05.10
      */
-    fun login(input: AuthInput)
+    fun login(input: AuthInput): String
 }

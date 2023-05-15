@@ -24,14 +24,21 @@ class AccountPersistanceAdapter(
      * 로그인 프로세스
      *
      * @param input [AuthInput]
+     * @return [String]
      * @author yoonho
      * @since 2023.05.10
      */
-    override fun findUserIdAndPassword(input: AuthInput) {
+    override fun findUserIdAndPassword(input: AuthInput): String {
         log.info(" >>> [findUserIdAndPassword] userId: ${input.userId}, password: ${input.password}")
 
-        accountRepository.findByUserIdAndPassword(userId = input.userId, password = input.password)
-            .orElseThrow { throw NotRegisteredUserException("등록된 사용자가 아닙니다.") }
+        return try {
+            "userId=${accountRepository.findByUserIdAndPassword(userId = input.userId, password = input.password)
+                .orElseThrow { throw NotRegisteredUserException("등록된 사용자가 아닙니다.") }
+                .userId!!}"
+        }catch (e: Exception) {
+            log.error(" >>> [findUserIdAndPassword] Exception occurs - message: ${e.message}")
+            "code=401&error_description=NotRegisteredUser"
+        }
     }
 
     /**

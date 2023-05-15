@@ -34,15 +34,13 @@ class AccountController(
     fun auth(@RequestBody @Validated input: AuthInput): BaseResponse<String> {
         log.info(" >>> [auth] input: $input")
 
-        // 로그인 프로세스 (미등록 사용자일 경우 Exception 발생)
-        loginUseCase.login(input)
-
         // 로그인 성공이후 리다이렉트 경로 설정
         val redirectUri =
             if(input.redirectUri.isNullOrEmpty()) {
                 "/"
             } else {
-                input.redirectUri
+                // 로그인 프로세스 (미등록 사용자일 경우 Exception 발생)
+                loginUseCase.login(input)
             }
         return BaseResponse.Success(redirectUri)
     }

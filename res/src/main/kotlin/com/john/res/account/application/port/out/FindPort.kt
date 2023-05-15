@@ -12,8 +12,9 @@ interface FindPort {
      * 로그인 프로세스
      *
      * @param input [AuthInput]
+     * @return [String]
      * @author yoonho
      * @since 2023.05.10
      */
-    fun findUserIdAndPassword(input: AuthInput)
+    fun findUserIdAndPassword(input: AuthInput): String
 }
