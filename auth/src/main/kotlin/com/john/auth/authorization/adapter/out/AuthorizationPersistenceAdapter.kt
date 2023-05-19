@@ -44,7 +44,7 @@ class AuthorizationPersistenceAdapter(
             throw InvalidScopeException()
         }
         // redirect_uri 체크
-        val registeredClientRedirectUris = registeredClient.redirectUris ?: ""
+        val registeredClientRedirectUris = registeredClient.redirectUris?.split(",") ?: listOf()
         if(!registeredClientRedirectUris.contains(input.redirect_uri)) {
             throw RedirectMismatchException()
         }
