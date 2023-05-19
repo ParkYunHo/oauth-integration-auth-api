@@ -3,6 +3,7 @@ package com.john.auth.authorization.adapter.`in`.web
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
+import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
 import com.john.auth.consent.application.port.`in`.ConsentCheckUseCase
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class AuthorizationController(
     private val authorizationCodeCheckUseCase: AuthorizationCodeCheckUseCase,
-    private val consentCheckUseCase: ConsentCheckUseCase
+    private val authorizationCodeRegistUseCase: AuthorizationCodeRegistUseCase
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -41,9 +42,8 @@ class AuthorizationController(
     fun authorizeCode(@Validated input: AuthorizationCodeRedirectInput, response: HttpServletResponse) {
         log.info(" >>> [authorizeCode] input: $input")
 
-        // TODO: 인가코드 발급(to: redirect_uri)
-//        val authorizationCode =
-//        response.sendRedirect(input.redirect_uri)
+        val authorizationCode = authorizationCodeRegistUseCase.register(input)
+        response.sendRedirect("${input.redirect_uri}?code=$authorizationCode")
     }
 
 }

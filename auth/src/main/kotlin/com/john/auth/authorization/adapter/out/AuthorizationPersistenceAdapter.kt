@@ -1,7 +1,11 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
+import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
+import com.john.auth.authorization.application.dto.AuthorizationCodeDto
 import com.john.auth.authorization.application.port.out.AuthorizationCodeFindPort
+import com.john.auth.authorization.application.port.out.AuthorizationCodeSavePort
+import com.john.auth.authorization.domain.Authorization
 import com.john.auth.client.adapter.out.RegisteredClientRepository
 import com.john.auth.common.exception.InvalidClientException
 import com.john.auth.common.exception.InvalidScopeException
@@ -17,7 +21,7 @@ import org.springframework.stereotype.Repository
 class AuthorizationPersistenceAdapter(
     private val authorizationRepository: AuthorizationRepository,
     private val clientRepository: RegisteredClientRepository
-): AuthorizationCodeFindPort {
+): AuthorizationCodeFindPort, AuthorizationCodeSavePort {
 
     /**
      * 인가코드 요청 Input 검사
@@ -44,5 +48,27 @@ class AuthorizationPersistenceAdapter(
         if(!registeredClientRedirectUris.contains(input.redirect_uri)) {
             throw RedirectMismatchException()
         }
+    }
+
+    /**
+     * 인가코드 저장
+     *
+     * @param input [AuthorizationCodeDto]
+     * @author yoonho
+     * @since 2023.05.19
+     */
+    override fun register(input: AuthorizationCodeDto) {
+        authorizationRepository.save(
+            Authorization(
+                registeredClientId = input.clientId,
+                principalName = input.userId,
+                authorizationGrantType = input.grantType,
+                authorizedScopes = input.scopes,
+                state = input.state,
+                authorizationCodeValue = input.authorizationCode,
+                authorizationCodeIssuedAt = input.authorizationCodeIssuedAt,
+                authorizationCodeExpiresAt = input.authorizationCodeExpiresAt
+            )
+        )
     }
 }
