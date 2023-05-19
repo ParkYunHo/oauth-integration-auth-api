@@ -2,13 +2,11 @@ package com.john.auth.authorization.application
 
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
-import com.john.auth.authorization.application.port.out.FindPort
+import com.john.auth.authorization.application.port.out.AuthorizationCodeFindPort
 import com.john.auth.common.utils.EnvironmentUtils
 import com.john.auth.common.utils.ParseUtils
-import org.hibernate.cfg.Environment
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.util.UriComponentsBuilder
 
 /**
  * @author yoonho
@@ -16,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder
  */
 @Service
 class AuthorizationService(
-    private val findPort: FindPort
+    private val authorizationCodeFindPort: AuthorizationCodeFindPort
 ): AuthorizationCodeCheckUseCase {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -29,11 +27,11 @@ class AuthorizationService(
      * @since 2023.05.15
      */
     override fun check(input: AuthorizationCodeInput): String {
-        findPort.checkClient(input = input)
+        authorizationCodeFindPort.checkClient(input = input)
 
-        val consentUri = EnvironmentUtils.getProperty("auth.url.authorize")
+        val consentUri = EnvironmentUtils.getProperty("auth.url.consent")
         val loginPageUri = EnvironmentUtils.getProperty("auth.url.login")
-        val state = ParseUtils.getState(redirectUrl = input.redirect_uri, scope = input.scope, state = input.state!!)
+        val state = ParseUtils.getState(redirectUrl = input.redirect_uri, scope = input.scope, state = input.state!!, clientId = input.client_id)
 
         return "$loginPageUri?redirectUri=$consentUri&state=$state"
     }

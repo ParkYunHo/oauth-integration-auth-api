@@ -18,6 +18,7 @@ spring:
 auth:
   url:
     login: http://localhost:8080/login
+    consent: http://localhost:9000/oauth/consent
     authorize: http://localhost:9000/oauth/authorize/code
 
 

@@ -12,6 +12,8 @@ data class AuthorizationCodeRedirectInput(
     val redirect_uri: String,
     @field:NotBlank(message = "INVALID SCOPE")
     val scope: String,
+    @field:NotBlank(message = "INVALID CLIENT_ID")
+    val client_id: String,
 
     val userId: String? = "",
     val state: String? = "",

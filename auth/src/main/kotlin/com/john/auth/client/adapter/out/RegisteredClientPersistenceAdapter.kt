@@ -4,6 +4,7 @@ import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.application.port.out.DeletePort
+import com.john.auth.client.application.port.out.FindPort
 import com.john.auth.client.application.port.out.SavePort
 import com.john.auth.client.domain.RegisteredClient
 import com.john.auth.common.constants.ReIssueType
@@ -22,7 +23,7 @@ import java.time.LocalDateTime
 @Repository
 class RegisteredClientPersistenceAdapter(
     private val registeredClientRepository: RegisteredClientRepository
-): SavePort, DeletePort {
+): SavePort, DeletePort, FindPort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
@@ -151,4 +152,9 @@ class RegisteredClientPersistenceAdapter(
             throw BadRequestException("Client 삭제에 실패하였습니다.")
         }
     }
+
+    override fun findScopes(clientId: String): String =
+        registeredClientRepository.findByRestClientId(restClientId = clientId)
+            .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+            .scopes
 }

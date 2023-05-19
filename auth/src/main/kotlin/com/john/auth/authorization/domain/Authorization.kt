@@ -65,12 +65,12 @@ class Authorization(
 
     @Lob
     @Column(name = "REFRESH_TOKEN_VALUE")
-    @Comment("엑세스토큰")
+    @Comment("리프레시토큰")
     val refreshTokenValue: String? = null,
     @Column(name = "REFRESH_TOKEN_ISSUED_AT")
-    @Comment("엑세스토큰 발행일자")
+    @Comment("리프레시토큰 발행일자")
     val refreshTokenIssuedAt: LocalDateTime? = null,
     @Column(name = "REFRESH_TOKEN_EXPIRES_AT")
-    @Comment("엑세스토큰 만료일자")
+    @Comment("리프레시토큰 만료일자")
     val refreshTokenExpiresAt: LocalDateTime? = null,
 )

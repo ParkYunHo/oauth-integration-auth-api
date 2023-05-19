@@ -6,7 +6,7 @@ import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
  * @author yoonho
  * @since 2023.05.14
  */
-interface FindPort {
+interface AuthorizationCodeFindPort {
 
     /**
      * 인가코드 요청 Input 검사

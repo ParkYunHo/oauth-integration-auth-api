@@ -120,4 +120,13 @@ class ExceptionHandler {
         val message = "Invalid Client"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
+
+    @ExceptionHandler(NotRegisteredUserException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun notRegisteredUserException(e: NotRegisteredUserException): BaseResponse<Void> {
+        log.error(" >>> [notRegisteredUserException] message: ${e.message}")
+
+        val message = "Not Registered User"
+        return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
+    }
 }

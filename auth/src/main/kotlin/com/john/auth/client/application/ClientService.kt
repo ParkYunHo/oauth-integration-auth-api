@@ -5,9 +5,11 @@ import com.john.auth.client.adapter.`in`.web.dto.ClientRegistInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.application.port.`in`.DeleteUseCase
+import com.john.auth.client.application.port.`in`.FindScopesUseCase
 import com.john.auth.client.application.port.`in`.RegistUseCase
 import com.john.auth.client.application.port.`in`.UpdateUseCase
 import com.john.auth.client.application.port.out.DeletePort
+import com.john.auth.client.application.port.out.FindPort
 import com.john.auth.client.application.port.out.SavePort
 import com.john.auth.common.constants.ReIssueType
 import com.john.auth.common.utils.Base64StringKeyGenerator
@@ -22,8 +24,9 @@ import java.time.LocalDateTime
 @Service
 class ClientService(
     private val savePort: SavePort,
-    private val deletePort: DeletePort
-): RegistUseCase, UpdateUseCase, DeleteUseCase {
+    private val deletePort: DeletePort,
+    private val findPort: FindPort
+): RegistUseCase, UpdateUseCase, DeleteUseCase, FindScopesUseCase {
 
     /**
      * Client 등록
@@ -91,4 +94,16 @@ class ClientService(
      */
     override fun delete(input: Long) =
         deletePort.delete(input = input)
+
+
+    /**
+     * Client의 Scopes 조회
+     *
+     * @param clientId [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.19
+     */
+    override fun findScopes(clientId: String): String =
+        findPort.findScopes(clientId = clientId)
 }

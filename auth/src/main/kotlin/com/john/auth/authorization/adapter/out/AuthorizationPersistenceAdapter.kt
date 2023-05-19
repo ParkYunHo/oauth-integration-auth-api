@@ -1,14 +1,13 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
-import com.john.auth.authorization.application.port.out.FindPort
+import com.john.auth.authorization.application.port.out.AuthorizationCodeFindPort
 import com.john.auth.client.adapter.out.RegisteredClientRepository
 import com.john.auth.common.exception.InvalidClientException
 import com.john.auth.common.exception.InvalidScopeException
 import com.john.auth.common.exception.RedirectMismatchException
 import com.john.auth.common.exception.UnsupportedResponseTypeException
 import org.springframework.stereotype.Repository
-import org.springframework.web.util.UriComponentsBuilder
 
 /**
  * @author yoonho
@@ -18,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder
 class AuthorizationPersistenceAdapter(
     private val authorizationRepository: AuthorizationRepository,
     private val clientRepository: RegisteredClientRepository
-): FindPort {
+): AuthorizationCodeFindPort {
 
     /**
      * 인가코드 요청 Input 검사
