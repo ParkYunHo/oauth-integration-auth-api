@@ -121,6 +121,15 @@ class ExceptionHandler {
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
 
+    @ExceptionHandler(InvalidTokenException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun invalidTokenException(e: InvalidTokenException): BaseResponse<Void> {
+        log.error(" >>> [InvalidTokenException] message: ${e.message}")
+
+        val message = "Invalid Token"
+        return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
+    }
+
     @ExceptionHandler(NotRegisteredUserException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun notRegisteredUserException(e: NotRegisteredUserException): BaseResponse<Void> {

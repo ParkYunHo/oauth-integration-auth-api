@@ -153,8 +153,11 @@ class RegisteredClientPersistenceAdapter(
         }
     }
 
-    override fun findScopes(clientId: String): String =
-        registeredClientRepository.findByRestClientId(restClientId = clientId)
+    override fun findScopes(clientId: String, clientSecret: String): String =
+        registeredClientRepository.findByRestClientIdAndClientSecret(
+            restClientId = clientId,
+            clientSecret = clientSecret
+        )
             .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
             .scopes
 }

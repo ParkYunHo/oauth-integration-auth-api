@@ -67,11 +67,12 @@ class ConsentController(
 
         val mv = ModelAndView("consent")
         mv.addObject("clientId", input.client_id)
+        mv.addObject("clientSecret", input.client_secret)
         mv.addObject("redirectUri", input.redirect_uri)
         mv.addObject("userId", input.userId)
         mv.addObject("state", input.state)
 
-        val scopes = findScopesUseCase.findScopes(clientId = input.client_id)
+        val scopes = findScopesUseCase.findScopes(clientId = input.client_id, clientSecret = input.client_secret)
         mv.addObject("scopes", scopes.split(",").toList())
 
         return mv

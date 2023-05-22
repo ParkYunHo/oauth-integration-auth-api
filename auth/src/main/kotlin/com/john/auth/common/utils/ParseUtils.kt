@@ -2,6 +2,7 @@ package com.john.auth.common.utils
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.domain.RegisteredClient
@@ -50,15 +51,13 @@ object ParseUtils {
     /**
      * 로그인페이지로 리다이렉트시 전달할 매개변수 설정
      *
-     * @param redirectUrl [String]
-     * @param scope [String]
-     * @param state [String]
+     * @param input [AuthorizationCodeInput]
      * @return [String]
      * @author yoonho
      * @since 2023.05.15
      */
-    fun getState(redirectUrl: String, scope: String, state: String, clientId: String): String =
-        URLEncoder.encode("redirect_uri=$redirectUrl&scope=$scope&state=$state&client_id=$clientId", "UTF-8")
+    fun getState(input: AuthorizationCodeInput): String =
+        URLEncoder.encode("redirect_uri=${input.redirect_uri}&scope=${input.scope}&state=${input.state}&client_id=${input.client_id}&client_secret=${input.client_secret}", "UTF-8")
 
     /**
      * 인가코드 파라미터 설정
@@ -69,5 +68,5 @@ object ParseUtils {
      * @since 2023.05.19
      */
     fun getAuthorizationParameter(input: AuthorizationCodeRedirectInput): String =
-        "redirect_uri=${input.redirect_uri}&scope=${input.scope}&state=${input.state}&client_id=${input.client_id}&userId=${input.userId}"
+        "redirect_uri=${input.redirect_uri}&scope=${input.scope}&state=${input.state}&client_id=${input.client_id}&client_secret=${input.client_secret}&userId=${input.userId}"
 }

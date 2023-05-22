@@ -42,6 +42,7 @@
       <form name="consent_form" method="post" action="/oauth/consent/register">
         <input type="hidden" name="redirect_uri" th:value="${redirectUri}">
         <input type="hidden" name="client_id" th:value="${clientId}">
+        <input type="hidden" name="client_secret" th:value="${clientSecret}">
         <input type="hidden" name="userId" th:value="${userId}">
         <input type="hidden" name="state" th:value="${state}">
 

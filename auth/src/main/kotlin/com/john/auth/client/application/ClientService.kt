@@ -100,10 +100,11 @@ class ClientService(
      * Client의 Scopes 조회
      *
      * @param clientId [String]
+     * @param clientSecret [String]
      * @return [String]
      * @author yoonho
      * @since 2023.05.19
      */
-    override fun findScopes(clientId: String): String =
-        findPort.findScopes(clientId = clientId)
+    override fun findScopes(clientId: String, clientSecret: String): String =
+        findPort.findScopes(clientId = clientId, clientSecret = clientSecret)
 }

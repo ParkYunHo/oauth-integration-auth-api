@@ -5,5 +5,5 @@ package com.john.auth.client.application.port.`in`
  * @since 2023.05.19
  */
 interface FindScopesUseCase {
-    fun findScopes(clientId: String): String
+    fun findScopes(clientId: String, clientSecret: String): String
 }

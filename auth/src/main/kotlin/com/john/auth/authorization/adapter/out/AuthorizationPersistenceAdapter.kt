@@ -1,16 +1,15 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
-import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.authorization.application.dto.AuthorizationCodeDto
-import com.john.auth.authorization.application.port.out.AuthorizationCodeFindPort
-import com.john.auth.authorization.application.port.out.AuthorizationCodeSavePort
+import com.john.auth.authorization.application.dto.IssueTokenDto
+import com.john.auth.authorization.application.dto.TokenInfo
+import com.john.auth.authorization.application.port.out.FindPort
+import com.john.auth.authorization.application.port.out.SavePort
 import com.john.auth.authorization.domain.Authorization
 import com.john.auth.client.adapter.out.RegisteredClientRepository
-import com.john.auth.common.exception.InvalidClientException
-import com.john.auth.common.exception.InvalidScopeException
-import com.john.auth.common.exception.RedirectMismatchException
-import com.john.auth.common.exception.UnsupportedResponseTypeException
+import com.john.auth.client.domain.RegisteredClient
+import com.john.auth.common.exception.*
 import org.springframework.stereotype.Repository
 
 /**
@@ -21,34 +20,23 @@ import org.springframework.stereotype.Repository
 class AuthorizationPersistenceAdapter(
     private val authorizationRepository: AuthorizationRepository,
     private val clientRepository: RegisteredClientRepository
-): AuthorizationCodeFindPort, AuthorizationCodeSavePort {
+): FindPort, SavePort {
 
     /**
      * 인가코드 요청 Input 검사
      *
-     * @param input [AuthorizationCodeInput]
+     * @param clientId [String]
+     * @param clientSecret [String]
      * @return [String]
      * @author yoonho
      * @since 2023.05.14
      */
-    override fun checkClient(input: AuthorizationCodeInput) {
-        val registeredClient = clientRepository.findByRestClientId(restClientId = input.client_id)
+    override fun checkClient(clientId: String, clientSecret: String): RegisteredClient =
+        clientRepository.findByRestClientIdAndClientSecret(
+            restClientId = clientId,
+            clientSecret = clientSecret
+        )
             .orElseThrow { throw InvalidClientException() }
-
-        // grant_type 체크
-        if(!registeredClient.authorizationGrantTypes.contains(input.response_type)) {
-            throw UnsupportedResponseTypeException()
-        }
-        // scope 체크
-        if(!registeredClient.scopes.contains(input.scope)) {
-            throw InvalidScopeException()
-        }
-        // redirect_uri 체크
-        val registeredClientRedirectUris = registeredClient.redirectUris?.split(",") ?: listOf()
-        if(!registeredClientRedirectUris.contains(input.redirect_uri)) {
-            throw RedirectMismatchException()
-        }
-    }
 
     /**
      * 인가코드 저장
@@ -57,7 +45,7 @@ class AuthorizationPersistenceAdapter(
      * @author yoonho
      * @since 2023.05.19
      */
-    override fun register(input: AuthorizationCodeDto) {
+    override fun authorizationCodeRegister(input: AuthorizationCodeDto) {
         authorizationRepository.save(
             Authorization(
                 registeredClientId = input.clientId,
@@ -70,5 +58,13 @@ class AuthorizationPersistenceAdapter(
                 authorizationCodeExpiresAt = input.authorizationCodeExpiresAt
             )
         )
+    }
+
+    override fun checkAuthorizationCode(clientId: String, authorizationCode: String): Authorization =
+        authorizationRepository.findByRegisteredClientIdAndAuthorizationCodeValue(registeredClientId = clientId, authorizationCodeValue = authorizationCode)
+            .orElseThrow { throw InvalidTokenException() }
+
+    override fun tokenInfoRegister(authorization: Authorization) {
+        authorizationRepository.save(authorization)
     }
 }

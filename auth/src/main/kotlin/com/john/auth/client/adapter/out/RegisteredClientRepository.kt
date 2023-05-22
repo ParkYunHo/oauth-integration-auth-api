@@ -9,5 +9,5 @@ import java.util.*
  * @since 2023.05.11
  */
 interface RegisteredClientRepository: JpaRepository<RegisteredClient, Long> {
-    fun findByRestClientId(restClientId: String): Optional<RegisteredClient>
+    fun findByRestClientIdAndClientSecret(restClientId: String, clientSecret: String): Optional<RegisteredClient>
 }

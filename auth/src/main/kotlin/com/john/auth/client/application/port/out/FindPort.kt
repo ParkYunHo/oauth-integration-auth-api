@@ -5,5 +5,5 @@ package com.john.auth.client.application.port.out
  * @since 2023.05.19
  */
 interface FindPort {
-    fun findScopes(clientId: String): String
+    fun findScopes(clientId: String, clientSecret: String): String
 }
