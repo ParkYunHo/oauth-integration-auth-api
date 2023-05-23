@@ -23,7 +23,7 @@ class AuthorizationPersistenceAdapter(
 ): FindPort, SavePort {
 
     /**
-     * 인가코드 요청 Input 검사
+     * Client 인증
      *
      * @param clientId [String]
      * @param clientSecret [String]
@@ -60,11 +60,36 @@ class AuthorizationPersistenceAdapter(
         )
     }
 
+    /**
+     * 인가코드 체크
+     *
+     * @param clientId [String]
+     * @param authorizationCode [String]
+     * @return [Authorization]
+     */
     override fun checkAuthorizationCode(clientId: String, authorizationCode: String): Authorization =
         authorizationRepository.findByRegisteredClientIdAndAuthorizationCodeValue(registeredClientId = clientId, authorizationCodeValue = authorizationCode)
             .orElseThrow { throw InvalidTokenException() }
 
+    /**
+     * 토큰발급
+     *
+     * @param authorization [Authorization]
+     * @author yoonho
+     * @since 2023.05.23
+     */
     override fun tokenInfoRegister(authorization: Authorization) {
         authorizationRepository.save(authorization)
     }
+
+    /**
+     * RefreshToken 체크
+     *
+     * @param clientId [String]
+     * @param refreshToken [String]
+     * @return [Authorization]
+     */
+    override fun checkRefreshToken(clientId: String, refreshToken: String): Authorization =
+        authorizationRepository.findByRegisteredClientIdAndRefreshTokenValue(registeredClientId = clientId, refreshTokenValue = refreshToken)
+            .orElseThrow { throw InvalidTokenException() }
 }

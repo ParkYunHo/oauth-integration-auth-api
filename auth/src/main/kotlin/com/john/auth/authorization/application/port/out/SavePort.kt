@@ -20,5 +20,12 @@ interface SavePort {
      */
     fun authorizationCodeRegister(input: AuthorizationCodeDto)
 
+    /**
+     * 토큰발급
+     *
+     * @param authorization [Authorization]
+     * @author yoonho
+     * @since 2023.05.23
+     */
     fun tokenInfoRegister(authorization: Authorization)
 }

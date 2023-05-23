@@ -9,5 +9,26 @@ import java.util.*
  * @since 2023.05.13
  */
 interface AuthorizationRepository: JpaRepository<Authorization, Long> {
+
+    /**
+     * Client 조회
+     *
+     * @param registeredClientId [String]
+     * @param authorizationCodeValue [String]
+     * @return [Optional]<[Authorization]>
+     * @author yoonho
+     * @since 2023.05.23
+     */
     fun findByRegisteredClientIdAndAuthorizationCodeValue(registeredClientId: String, authorizationCodeValue: String): Optional<Authorization>
+
+    /**
+     * RefreshToken 조회
+     *
+     * @param registeredClientId [String]
+     * @param refreshTokenValue [String]
+     * @return [Optional]<[Authorization]>
+     * @author yoonho
+     * @since 2023.05.23
+     */
+    fun findByRegisteredClientIdAndRefreshTokenValue(registeredClientId: String, refreshTokenValue: String): Optional<Authorization>
 }

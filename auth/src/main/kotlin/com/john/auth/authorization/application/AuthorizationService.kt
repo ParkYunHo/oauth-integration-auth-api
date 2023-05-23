@@ -16,6 +16,7 @@ import com.john.auth.common.utils.EnvironmentUtils
 import com.john.auth.common.utils.ParseUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 
@@ -145,19 +146,48 @@ class AuthorizationService(
                 if(input.refresh_token.isNullOrEmpty()) {
                     throw BadRequestException()
                 }
-                // TODO: refresh_token 유효성체크 (존재유무, 만료여부, 1달이내 남았는지 여부)
-                //      1달이상 남은경우: AccessToken만 발급&저장
-                //      1달이하 남은경우: AccessToken&RefreshToken 발급&저장
+
+                val authorization = findPort.checkRefreshToken(clientId = input.client_id, refreshToken = input.refresh_token)
+
+                // 만료여부 체크
+                if(LocalDateTime.now().isAfter(authorization.refreshTokenExpiresAt!!)) {
+                    throw InvalidTokenException()
+                }
+
+                val accessToken = Base64StringKeyGenerator.generateKey(keyLength = 96)
+                val expiresIn = 60 * 60 * 6     // 6시간
+                var refreshToken = ""
+                var refreshTokenExpiresIn = 0
+
+                authorization.accessTokenValue = accessToken
+                authorization.accessTokenIssuedAt = LocalDateTime.now()
+                authorization.accessTokenExpiresAt = LocalDateTime.now().plusHours(6L)
+                authorization.accessTokenType = "bearer"
+                authorization.accessTokenScopes = ""        // TODO: 추후 어떻게 할지 결정
+
+                // refreshToken 만료기간이 1달 이내로 남았을 경우, refreshToken 갱신
+                val diff = Period.between(LocalDate.now(), authorization.refreshTokenExpiresAt!!.toLocalDate())
+                if(diff.months < 1) {
+                    refreshToken = Base64StringKeyGenerator.generateKey(keyLength = 96)
+                    refreshTokenExpiresIn = 60 * 60 * 24 * 60       // 2달(60일)
+
+                    authorization.refreshTokenValue = refreshToken
+                    authorization.refreshTokenIssuedAt = LocalDateTime.now()
+                    authorization.refreshTokenExpiresAt = LocalDateTime.now().plusMonths(2L)
+                }
+
+                // 토큰정보 저장
+                savePort.tokenInfoRegister(authorization = authorization)
 
                 return TokenInfo(
-                    "", "", 0
+                    token_type = authorization.accessTokenType!!,
+                    access_token = authorization.accessTokenValue!!,
+                    expires_in = expiresIn.toLong(),
+                    refresh_token = authorization.refreshTokenValue!!,
+                    refresh_token_expires_in = refreshTokenExpiresIn.toLong()
                 )
             }
             else -> throw BadRequestException("invalid grant_type")
         }
-
-
-
-
     }
 }

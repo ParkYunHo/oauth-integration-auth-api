@@ -11,7 +11,7 @@ import com.john.auth.client.domain.RegisteredClient
 interface FindPort {
 
     /**
-     * 인가코드 요청 Input 검사
+     * Client 인증
      *
      * @param clientId [String]
      * @param clientSecret [String]
@@ -20,5 +20,21 @@ interface FindPort {
      */
     fun checkClient(clientId: String, clientSecret: String): RegisteredClient
 
+    /**
+     * 인가코드 체크
+     *
+     * @param clientId [String]
+     * @param authorizationCode [String]
+     * @return [Authorization]
+     */
     fun checkAuthorizationCode(clientId: String, authorizationCode: String): Authorization
+
+    /**
+     * RefreshToken 체크
+     *
+     * @param clientId [String]
+     * @param refreshToken [String]
+     * @return [Authorization]
+     */
+    fun checkRefreshToken(clientId: String, refreshToken: String): Authorization
 }
