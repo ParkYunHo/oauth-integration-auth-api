@@ -183,7 +183,7 @@ class AuthorizationService(
                     token_type = authorization.accessTokenType!!,
                     access_token = authorization.accessTokenValue!!,
                     expires_in = expiresIn.toLong(),
-                    refresh_token = authorization.refreshTokenValue!!,
+                    refresh_token = refreshToken,
                     refresh_token_expires_in = refreshTokenExpiresIn.toLong()
                 )
             }
