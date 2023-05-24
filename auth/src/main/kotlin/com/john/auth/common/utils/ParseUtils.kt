@@ -6,6 +6,8 @@ import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.domain.RegisteredClient
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpHeaders
 import java.net.URLEncoder
 
 /**
@@ -69,4 +71,22 @@ object ParseUtils {
      */
     fun getAuthorizationParameter(input: AuthorizationCodeRedirectInput): String =
         "redirect_uri=${input.redirect_uri}&scope=${input.scope}&state=${input.state}&client_id=${input.client_id}&client_secret=${input.client_secret}&userId=${input.userId}"
+
+    /**
+     * Header에서 AccessToken 추출
+     *
+     * @param request [HttpServletRequest]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.24
+     */
+    fun getHeaderBearerToken(request: HttpServletRequest): String {
+        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val bearerPrefix = "Bearer "
+        if(bearerPrefix in authorization) {
+            return authorization.substringAfter(bearerPrefix)
+        }
+
+        return ""
+    }
 }

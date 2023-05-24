@@ -92,4 +92,16 @@ class AuthorizationPersistenceAdapter(
     override fun checkRefreshToken(clientId: String, refreshToken: String): Authorization =
         authorizationRepository.findByRegisteredClientIdAndRefreshTokenValue(registeredClientId = clientId, refreshTokenValue = refreshToken)
             .orElseThrow { throw InvalidTokenException() }
+
+    /**
+     * AccessToken 체크
+     *
+     * @param accessToken [String]
+     * @return [Authorization]
+     * @author yoonho
+     * @since 2023.05.24
+     */
+    override fun checkAccessToken(accessToken: String): Authorization =
+        authorizationRepository.findByAccessTokenValue(accessTokenValue = accessToken)
+            .orElseThrow { throw InvalidTokenException() }
 }

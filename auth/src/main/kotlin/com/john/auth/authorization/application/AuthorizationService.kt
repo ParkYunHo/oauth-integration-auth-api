@@ -4,7 +4,9 @@ import com.john.auth.authorization.adapter.`in`.web.dto.AccessTokenInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.authorization.application.dto.AuthorizationCodeDto
+import com.john.auth.authorization.application.dto.IntrospectDto
 import com.john.auth.authorization.application.dto.TokenInfo
+import com.john.auth.authorization.application.port.`in`.AccessTokenIntrospectUseCase
 import com.john.auth.authorization.application.port.`in`.AccessTokenRegistUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
@@ -16,9 +18,8 @@ import com.john.auth.common.utils.EnvironmentUtils
 import com.john.auth.common.utils.ParseUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.Period
+import java.time.*
+import java.time.temporal.ChronoUnit
 
 /**
  * @author yoonho
@@ -28,7 +29,7 @@ import java.time.Period
 class AuthorizationService(
     private val findPort: FindPort,
     private val savePort: SavePort
-): AuthorizationCodeCheckUseCase, AuthorizationCodeRegistUseCase, AccessTokenRegistUseCase {
+): AuthorizationCodeCheckUseCase, AuthorizationCodeRegistUseCase, AccessTokenRegistUseCase, AccessTokenIntrospectUseCase {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
@@ -189,5 +190,32 @@ class AuthorizationService(
             }
             else -> throw BadRequestException("invalid grant_type")
         }
+    }
+
+    /**
+     * 토큰검사
+     *
+     * @param accessToken [String]
+     * @return [IntrospectDto]
+     * @author yoonho
+     * @since 2023.05.24
+     */
+    override fun introspect(accessToken: String): IntrospectDto {
+        val authorization = findPort.checkAccessToken(accessToken = accessToken)
+        val expiresIn = authorization.accessTokenExpiresAt!!
+
+        // 만료여부 체크
+        if(LocalDateTime.now().isAfter(expiresIn)) {
+            throw InvalidTokenException()
+        }
+
+        // 남은 만료시간 계산
+        val diff = ChronoUnit.SECONDS.between(LocalDateTime.now(), expiresIn)
+
+        return IntrospectDto(
+            appUserId = "",     // TODO: AppUserId 기능 작업 필요
+            expiresIn = diff,
+            clientId = authorization.registeredClientId
+        )
     }
 }

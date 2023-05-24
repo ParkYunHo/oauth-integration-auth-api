@@ -26,6 +26,8 @@ interface FindPort {
      * @param clientId [String]
      * @param authorizationCode [String]
      * @return [Authorization]
+     * @author yoonho
+     * @since 2023.05.24
      */
     fun checkAuthorizationCode(clientId: String, authorizationCode: String): Authorization
 
@@ -35,6 +37,18 @@ interface FindPort {
      * @param clientId [String]
      * @param refreshToken [String]
      * @return [Authorization]
+     * @author yoonho
+     * @since 2023.05.24
      */
     fun checkRefreshToken(clientId: String, refreshToken: String): Authorization
+
+    /**
+     * AccessToken 체크
+     *
+     * @param accessToken [String]
+     * @return [Authorization]
+     * @author yoonho
+     * @since 2023.05.24
+     */
+    fun checkAccessToken(accessToken: String): Authorization
 }

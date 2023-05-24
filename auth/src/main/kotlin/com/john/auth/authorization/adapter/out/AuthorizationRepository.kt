@@ -31,4 +31,14 @@ interface AuthorizationRepository: JpaRepository<Authorization, Long> {
      * @since 2023.05.23
      */
     fun findByRegisteredClientIdAndRefreshTokenValue(registeredClientId: String, refreshTokenValue: String): Optional<Authorization>
+
+    /**
+     * AccessToken 조회
+     *
+     * @param accessTokenValue [String]
+     * @return [Optional]<[Authorization]>
+     * @author yoonho
+     * @since 2023.05.24
+     */
+    fun findByAccessTokenValue(accessTokenValue: String): Optional<Authorization>
 }
