@@ -4,10 +4,7 @@ import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientRegistInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
-import com.john.auth.client.application.port.`in`.DeleteUseCase
-import com.john.auth.client.application.port.`in`.FindScopesUseCase
-import com.john.auth.client.application.port.`in`.RegistUseCase
-import com.john.auth.client.application.port.`in`.UpdateUseCase
+import com.john.auth.client.application.port.`in`.*
 import com.john.auth.client.application.port.out.DeletePort
 import com.john.auth.client.application.port.out.FindPort
 import com.john.auth.client.application.port.out.SavePort
@@ -26,7 +23,7 @@ class ClientService(
     private val savePort: SavePort,
     private val deletePort: DeletePort,
     private val findPort: FindPort
-): RegistUseCase, UpdateUseCase, DeleteUseCase, FindScopesUseCase {
+): RegistUseCase, UpdateUseCase, DeleteUseCase, FindScopesUseCase, RegistAppUserIdUseCase, FindAppUserIdUseCase {
 
     /**
      * Client 등록
@@ -107,4 +104,32 @@ class ClientService(
      */
     override fun findScopes(clientId: String, clientSecret: String): String =
         findPort.findScopes(clientId = clientId, clientSecret = clientSecret)
+
+    /**
+     * AppUserId 등록
+     *
+     * @param clientId [String]
+     * @param userId [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    override fun registAppUserId(clientId: String, userId: String): String {
+        val appUserId = Base64StringKeyGenerator.generateKey(str = "$clientId$userId")
+        savePort.registAppUserId(clientId = clientId, userId = userId, appUserId = appUserId)
+
+        return appUserId
+    }
+
+    /**
+     * AppUserId 조회
+     *
+     * @param clientId [String]
+     * @param userId [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    override fun findAppUserId(clientId: String, userId: String): String =
+        findPort.findAppUserId(clientId = clientId, userId = userId)
 }

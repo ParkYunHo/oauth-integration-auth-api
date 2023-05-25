@@ -12,6 +12,8 @@ import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckU
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
 import com.john.auth.authorization.application.port.out.FindPort
 import com.john.auth.authorization.application.port.out.SavePort
+import com.john.auth.client.application.port.`in`.FindAppUserIdUseCase
+import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
 import com.john.auth.common.exception.*
 import com.john.auth.common.utils.Base64StringKeyGenerator
 import com.john.auth.common.utils.EnvironmentUtils
@@ -28,7 +30,9 @@ import java.time.temporal.ChronoUnit
 @Service
 class AuthorizationService(
     private val findPort: FindPort,
-    private val savePort: SavePort
+    private val savePort: SavePort,
+    private val registAppUserIdUseCase: RegistAppUserIdUseCase,
+    private val findAppUserIdUseCase: FindAppUserIdUseCase
 ): AuthorizationCodeCheckUseCase, AuthorizationCodeRegistUseCase, AccessTokenRegistUseCase, AccessTokenIntrospectUseCase {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -88,6 +92,8 @@ class AuthorizationService(
         )
         // 인가코드 저장
         savePort.authorizationCodeRegister(input = authorizationCodeInfo)
+        // AppUserId 발급
+        registAppUserIdUseCase.registAppUserId(clientId = input.client_id, userId = input.userId)
 
         return authorizationCode
     }
@@ -212,8 +218,11 @@ class AuthorizationService(
         // 남은 만료시간 계산
         val diff = ChronoUnit.SECONDS.between(LocalDateTime.now(), expiresIn)
 
+        // AppUserId 조회
+        val appUserId = findAppUserIdUseCase.findAppUserId(clientId = authorization.registeredClientId, userId = authorization.principalName)
+
         return IntrospectDto(
-            appUserId = "",     // TODO: AppUserId 기능 작업 필요
+            appUserId = appUserId,
             expiresIn = diff,
             clientId = authorization.registeredClientId
         )

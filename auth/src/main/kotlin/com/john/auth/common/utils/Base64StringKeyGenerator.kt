@@ -26,4 +26,17 @@ object Base64StringKeyGenerator {
 
         return String(encoder.encode(bytes))
     }
+
+    /**
+     * 문자열 암호화
+     *
+     * @param str [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    fun generateKey(str: String): String {
+        val encoder = Base64.getUrlEncoder().withoutPadding()
+        return String(encoder.encode(str.toByteArray()))
+    }
 }

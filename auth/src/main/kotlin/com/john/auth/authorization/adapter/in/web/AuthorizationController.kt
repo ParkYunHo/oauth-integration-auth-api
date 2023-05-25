@@ -9,6 +9,7 @@ import com.john.auth.authorization.application.port.`in`.AccessTokenIntrospectUs
 import com.john.auth.authorization.application.port.`in`.AccessTokenRegistUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
+import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
 import com.john.auth.common.BaseResponse
 import com.john.auth.common.exception.BadRequestException
 import com.john.auth.common.utils.ParseUtils
@@ -29,7 +30,8 @@ class AuthorizationController(
     private val authorizationCodeCheckUseCase: AuthorizationCodeCheckUseCase,
     private val authorizationCodeRegistUseCase: AuthorizationCodeRegistUseCase,
     private val accessTokenRegistUseCase: AccessTokenRegistUseCase,
-    private val accessTokenIntrospectUseCase: AccessTokenIntrospectUseCase
+    private val accessTokenIntrospectUseCase: AccessTokenIntrospectUseCase,
+    private val registAppUserIdUseCase: RegistAppUserIdUseCase
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -61,7 +63,9 @@ class AuthorizationController(
     fun authorizeCode(@Validated input: AuthorizationCodeRedirectInput, response: HttpServletResponse) {
         log.info(" >>> [authorizeCode] input: $input")
 
+        // 인가코드 발급
         val authorizationCode = authorizationCodeRegistUseCase.register(input)
+
         response.sendRedirect("${input.redirect_uri}?code=$authorizationCode")
     }
 

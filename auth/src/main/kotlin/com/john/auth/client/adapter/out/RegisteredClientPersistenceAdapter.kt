@@ -7,6 +7,7 @@ import com.john.auth.client.application.port.out.DeletePort
 import com.john.auth.client.application.port.out.FindPort
 import com.john.auth.client.application.port.out.SavePort
 import com.john.auth.client.domain.RegisteredClient
+import com.john.auth.client.domain.RegisteredClientUserMapp
 import com.john.auth.common.constants.ReIssueType
 import com.john.auth.common.exception.BadRequestException
 import com.john.auth.common.exception.NotFoundException
@@ -22,7 +23,8 @@ import java.time.LocalDateTime
  */
 @Repository
 class RegisteredClientPersistenceAdapter(
-    private val registeredClientRepository: RegisteredClientRepository
+    private val registeredClientRepository: RegisteredClientRepository,
+    private val registeredClientUserMappRepository: RegisteredClientUserMappRepository
 ): SavePort, DeletePort, FindPort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -153,6 +155,15 @@ class RegisteredClientPersistenceAdapter(
         }
     }
 
+    /**
+     * Client의 Scopes 조회
+     *
+     * @param clientId [String]
+     * @param clientSecret [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.19
+     */
     override fun findScopes(clientId: String, clientSecret: String): String =
         registeredClientRepository.findByRestClientIdAndClientSecret(
             restClientId = clientId,
@@ -160,4 +171,38 @@ class RegisteredClientPersistenceAdapter(
         )
             .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
             .scopes
+
+    /**
+     * AppUserId 등록
+     *
+     * @param clientId [String]
+     * @param userId [String]
+     * @param appUserId [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    override fun registAppUserId(clientId: String, userId: String, appUserId: String) {
+        registeredClientUserMappRepository.save(
+            RegisteredClientUserMapp(
+                appUserId = appUserId,
+                clientId = clientId,
+                userId = userId,
+                createdAt = LocalDateTime.now()
+            )
+        )
+    }
+
+    /**
+     * AppUserId 조회
+     *
+     * @param clientId [String]
+     * @param userId [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    override fun findAppUserId(clientId: String, userId: String): String =
+        registeredClientUserMappRepository.findByClientIdAndUserId(clientId = clientId, userId = userId)
+            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
+            .appUserId
 }

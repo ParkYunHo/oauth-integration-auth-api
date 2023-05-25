@@ -40,4 +40,15 @@ interface SavePort {
      * @since 2023.05.13
      */
     fun reIssue(input: ClientReIssueInput): RegisteredClient
+
+    /**
+     * AppUserId 등록
+     *
+     * @param clientId [String]
+     * @param userId [String]
+     * @param appUserId [String]
+     * @author yoonho
+     * @since 2023.05.25
+     */
+    fun registAppUserId(clientId: String, userId: String, appUserId: String)
 }
