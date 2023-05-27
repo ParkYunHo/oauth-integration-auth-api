@@ -1,16 +1,15 @@
 package com.john.auth.authorization.adapter.out
 
-import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.application.dto.AuthorizationCodeDto
-import com.john.auth.authorization.application.dto.IssueTokenDto
-import com.john.auth.authorization.application.dto.TokenInfo
 import com.john.auth.authorization.application.port.out.FindPort
 import com.john.auth.authorization.application.port.out.SavePort
 import com.john.auth.authorization.domain.Authorization
 import com.john.auth.client.adapter.out.RegisteredClientRepository
 import com.john.auth.client.domain.RegisteredClient
-import com.john.auth.common.exception.*
+import com.john.auth.common.exception.InvalidClientException
+import com.john.auth.common.exception.InvalidTokenException
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 /**
  * @author yoonho
@@ -104,4 +103,26 @@ class AuthorizationPersistenceAdapter(
     override fun checkAccessToken(accessToken: String): Authorization =
         authorizationRepository.findByAccessTokenValue(accessTokenValue = accessToken)
             .orElseThrow { throw InvalidTokenException() }
+
+    /**
+     * 로그아웃
+     *
+     * @param userId [String]
+     * @param accessToken [String]
+     * @author yoonho
+     * @since 2023.05.27
+     */
+    override fun logout(userId: String, accessToken: String) {
+        val authorization = authorizationRepository.findByAccessTokenValue(accessTokenValue = accessToken)
+                                .orElseThrow { throw InvalidTokenException() }
+
+        // access_token 만료처리
+        authorization.accessTokenExpiresAt = LocalDateTime.now()
+        // refresh_token 만료처리
+        authorization.refreshTokenExpiresAt = LocalDateTime.now()
+        // authorization_code 만료처리
+        authorization.authorizationCodeExpiresAt = LocalDateTime.now()
+
+        authorizationRepository.save(authorization)
+    }
 }

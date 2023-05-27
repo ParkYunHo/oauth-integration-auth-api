@@ -5,6 +5,7 @@ import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.authorization.application.dto.AuthorizationCodeDto
 import com.john.auth.authorization.application.dto.IntrospectDto
+import com.john.auth.authorization.application.dto.LogoutDto
 import com.john.auth.authorization.application.dto.TokenInfo
 import com.john.auth.authorization.application.port.`in`.AccessTokenIntrospectUseCase
 import com.john.auth.authorization.application.port.`in`.AccessTokenRegistUseCase
@@ -13,6 +14,7 @@ import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegist
 import com.john.auth.authorization.application.port.out.FindPort
 import com.john.auth.authorization.application.port.out.SavePort
 import com.john.auth.client.application.port.`in`.FindAppUserIdUseCase
+import com.john.auth.authorization.application.port.`in`.LogoutUseCase
 import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
 import com.john.auth.common.exception.*
 import com.john.auth.common.utils.Base64StringKeyGenerator
@@ -33,7 +35,12 @@ class AuthorizationService(
     private val savePort: SavePort,
     private val registAppUserIdUseCase: RegistAppUserIdUseCase,
     private val findAppUserIdUseCase: FindAppUserIdUseCase
-): AuthorizationCodeCheckUseCase, AuthorizationCodeRegistUseCase, AccessTokenRegistUseCase, AccessTokenIntrospectUseCase {
+):  AuthorizationCodeCheckUseCase,
+    AuthorizationCodeRegistUseCase,
+    AccessTokenRegistUseCase,
+    AccessTokenIntrospectUseCase,
+    LogoutUseCase
+{
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
@@ -226,5 +233,26 @@ class AuthorizationService(
             expiresIn = diff,
             clientId = authorization.registeredClientId
         )
+    }
+
+    /**
+     * 로그아웃
+     *
+     * @param userId [String]
+     * @param accessToken [String]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.27
+     */
+    override fun logout(userId: String, accessToken: String): LogoutDto {
+        // TODO:
+        //      - Spring Cloud Feign 사용해서 Resource Server 로그아웃 API 호출
+        //      - 성공응답시, AccessToken, RefreshToken 관련 ExpiredAt를 현재 날짜로 변경
+        //      - 로그아웃 전체 성공시, target_id 응답
+
+
+
+        savePort.logout(userId = userId, accessToken = accessToken)
+        return LogoutDto(userId = userId)
     }
 }

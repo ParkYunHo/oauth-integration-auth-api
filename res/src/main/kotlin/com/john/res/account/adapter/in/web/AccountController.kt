@@ -60,4 +60,21 @@ class AccountController(
         val result = registerUseCase.register(input)
         return BaseResponse.Success(result)
     }
+
+    /**
+     * 로그아웃 (인가서버 호출용)
+     *
+     * @param userId [String]
+     * @return [BaseResponse]<[Boolean]>
+     * @author yoonho
+     * @since 2023.05.27
+     */
+    @PostMapping("/api/logout")
+    fun logout(userId: String): BaseResponse<Boolean> {
+        log.info(" >>> [logout] userId: $userId")
+
+        // Resource Server에서 로그아웃처리를 해야하지만 별도 처리없이 true만 리턴
+
+        return BaseResponse.Success(data = true)
+    }
 }

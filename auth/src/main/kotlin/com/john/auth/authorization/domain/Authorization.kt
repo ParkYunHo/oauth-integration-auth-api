@@ -44,7 +44,7 @@ class Authorization(
     val authorizationCodeIssuedAt: LocalDateTime? = null,
     @Column(name = "AUTHORIZATION_CODE_EXPIRES_AT")
     @Comment("인가코드 만료일자")
-    val authorizationCodeExpiresAt: LocalDateTime? = null,
+    var authorizationCodeExpiresAt: LocalDateTime? = null,
 
     @Lob
     @Column(name = "ACCESS_TOKEN_VALUE")

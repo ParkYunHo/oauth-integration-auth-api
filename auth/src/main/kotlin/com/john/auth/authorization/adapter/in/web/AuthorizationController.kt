@@ -3,13 +3,15 @@ package com.john.auth.authorization.adapter.`in`.web
 import com.john.auth.authorization.adapter.`in`.web.dto.AccessTokenInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
+import com.john.auth.authorization.adapter.`in`.web.dto.LogoutInput
 import com.john.auth.authorization.application.dto.IntrospectDto
+import com.john.auth.authorization.application.dto.LogoutDto
 import com.john.auth.authorization.application.dto.TokenInfo
 import com.john.auth.authorization.application.port.`in`.AccessTokenIntrospectUseCase
 import com.john.auth.authorization.application.port.`in`.AccessTokenRegistUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
-import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
+import com.john.auth.authorization.application.port.`in`.LogoutUseCase
 import com.john.auth.common.BaseResponse
 import com.john.auth.common.exception.BadRequestException
 import com.john.auth.common.utils.ParseUtils
@@ -31,7 +33,7 @@ class AuthorizationController(
     private val authorizationCodeRegistUseCase: AuthorizationCodeRegistUseCase,
     private val accessTokenRegistUseCase: AccessTokenRegistUseCase,
     private val accessTokenIntrospectUseCase: AccessTokenIntrospectUseCase,
-    private val registAppUserIdUseCase: RegistAppUserIdUseCase
+    private val logoutUseCase: LogoutUseCase
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -52,7 +54,7 @@ class AuthorizationController(
     }
 
     /**
-     * 인가코드 발급
+     * 인가코드 발급 (리다이렉트)
      *
      * @param input [AuthorizationCodeRedirectInput]
      * @param response [HttpServletResponse]
@@ -65,7 +67,6 @@ class AuthorizationController(
 
         // 인가코드 발급
         val authorizationCode = authorizationCodeRegistUseCase.register(input)
-
         response.sendRedirect("${input.redirect_uri}?code=$authorizationCode")
     }
 
@@ -99,10 +100,34 @@ class AuthorizationController(
         log.info(" >>> [introspect] token: $accessToken")
 
         if(accessToken.isEmpty()) {
+            log.error(" >>> [introspect] Empty Access Token")
             throw BadRequestException()
         }
 
         val result = accessTokenIntrospectUseCase.introspect(accessToken = accessToken)
+        return BaseResponse.Success(data = result)
+    }
+
+    /**
+     * 로그아웃
+     *
+     * @param input [LogoutInput]
+     * @param request [HttpServletRequest]
+     * @return [BaseResponse]<[String]>
+     * @author yoonho
+     * @since 2023.05.27
+     */
+    @GetMapping("/oauth/logout")
+    fun logout(input: LogoutInput, request: HttpServletRequest): BaseResponse<LogoutDto> {
+        val accessToken = ParseUtils.getHeaderBearerToken(request)
+        log.info(" >>> [logout] input: $input, token: $accessToken")
+
+        if(accessToken.isEmpty()) {
+            log.error(" >>> [logout] Empty Access Token")
+            throw BadRequestException()
+        }
+
+        val result = logoutUseCase.logout(userId = input.target_id, accessToken = accessToken)
         return BaseResponse.Success(data = result)
     }
 }

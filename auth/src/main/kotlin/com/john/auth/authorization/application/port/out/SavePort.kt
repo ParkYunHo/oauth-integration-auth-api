@@ -28,4 +28,14 @@ interface SavePort {
      * @since 2023.05.23
      */
     fun tokenInfoRegister(authorization: Authorization)
+
+    /**
+     * 로그아웃
+     *
+     * @param userId [String]
+     * @param accessToken [String]
+     * @author yoonho
+     * @since 2023.05.27
+     */
+    fun logout(userId: String, accessToken: String)
 }
