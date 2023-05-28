@@ -15,6 +15,7 @@ import com.john.auth.authorization.application.port.out.FindPort
 import com.john.auth.authorization.application.port.out.SavePort
 import com.john.auth.client.application.port.`in`.FindAppUserIdUseCase
 import com.john.auth.authorization.application.port.`in`.LogoutUseCase
+import com.john.auth.authorization.application.port.out.RestCallPort
 import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
 import com.john.auth.common.exception.*
 import com.john.auth.common.utils.Base64StringKeyGenerator
@@ -33,6 +34,7 @@ import java.time.temporal.ChronoUnit
 class AuthorizationService(
     private val findPort: FindPort,
     private val savePort: SavePort,
+    private val restCallPort: RestCallPort,
     private val registAppUserIdUseCase: RegistAppUserIdUseCase,
     private val findAppUserIdUseCase: FindAppUserIdUseCase
 ):  AuthorizationCodeCheckUseCase,
@@ -247,12 +249,16 @@ class AuthorizationService(
     override fun logout(userId: String, accessToken: String): LogoutDto {
         // TODO:
         //      - Spring Cloud Feign 사용해서 Resource Server 로그아웃 API 호출
+        //          (Spring Cloud Feign, java.net.HttpClient, webflux - WebClient 다 구현해볼 것)
         //      - 성공응답시, AccessToken, RefreshToken 관련 ExpiredAt를 현재 날짜로 변경
         //      - 로그아웃 전체 성공시, target_id 응답
 
+        // Resource Server 로그아웃API 호출
+        restCallPort.restCallLogoutHttpClient(userId = userId)
 
+        // 토큰정보 만료처리
+//        savePort.logout(userId = userId, accessToken = accessToken)
 
-        savePort.logout(userId = userId, accessToken = accessToken)
         return LogoutDto(userId = userId)
     }
 }

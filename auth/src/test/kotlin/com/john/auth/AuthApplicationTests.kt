@@ -1,13 +1,10 @@
 package com.john.auth
 
-import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
-@SpringBootTest
-class AuthApplicationTests {
-
-    @Test
-    fun contextLoads() {
-    }
-
+@SpringBootApplication
+class AuthApplicationTests
+fun main(args: Array<String>) {
+    runApplication<AuthApplicationTests>(*args)
 }

@@ -22,10 +22,14 @@ class Test: BehaviorSpec({
 
 //        log.info(" >>> diff - hours: ${ChronoUnit.HOURS.between(now, t)}, min: ${ChronoUnit.MINUTES.between(now, t)}, sec: ${ChronoUnit.SECONDS.between(now, t)}")
 
-        val clientId = "SQKUiBl0GDaQOxN9wDV9ZGbcTNNcwDvYTz0sSUxgRPM"
-        val userId = "admin"
-        val t = Base64StringKeyGenerator.generateKey("$clientId$userId")
-        log.info(" >>> t : $t")
+//        val clientId = "SQKUiBl0GDaQOxN9wDV9ZGbcTNNcwDvYTz0sSUxgRPM"
+//        val userId = "admin"
+//        val t = Base64StringKeyGenerator.generateKey("$clientId$userId")
+//        log.info(" >>> t : $t")
+
+        for(i: Int in 1 until 3) {
+            log.info(" >>> [test] $i")
+        }
     }
 
 })
