@@ -17,6 +17,7 @@ import com.john.auth.client.application.port.`in`.FindAppUserIdUseCase
 import com.john.auth.authorization.application.port.`in`.LogoutUseCase
 import com.john.auth.authorization.application.port.out.RestCallPort
 import com.john.auth.client.application.port.`in`.RegistAppUserIdUseCase
+import com.john.auth.common.constants.RestCallClientType
 import com.john.auth.common.exception.*
 import com.john.auth.common.utils.Base64StringKeyGenerator
 import com.john.auth.common.utils.EnvironmentUtils
@@ -34,7 +35,7 @@ import java.time.temporal.ChronoUnit
 class AuthorizationService(
     private val findPort: FindPort,
     private val savePort: SavePort,
-    private val restCallPort: RestCallPort,
+    private val restCallPorts: List<RestCallPort>,
     private val registAppUserIdUseCase: RegistAppUserIdUseCase,
     private val findAppUserIdUseCase: FindAppUserIdUseCase
 ):  AuthorizationCodeCheckUseCase,
@@ -254,7 +255,11 @@ class AuthorizationService(
         //      - 로그아웃 전체 성공시, target_id 응답
 
         // Resource Server 로그아웃API 호출
-        restCallPort.restCallLogoutHttpClient(userId = userId)
+        val restCallType = RestCallClientType.OPENFEIGN.code
+//        val restCallType = RestCallClientType.HTTPCLIENT.code
+
+        val restCallPort = restCallPorts.find { it.support(type = restCallType) } ?: throw NotFoundException()
+        restCallPort.restCallLogout(userId = userId)
 
         // 토큰정보 만료처리
 //        savePort.logout(userId = userId, accessToken = accessToken)

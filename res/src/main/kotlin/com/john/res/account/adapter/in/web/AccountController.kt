@@ -5,6 +5,8 @@ import com.john.res.account.adapter.`in`.web.dto.RegisterInput
 import com.john.res.account.application.port.`in`.LoginUseCase
 import com.john.res.account.application.port.`in`.RegisterUseCase
 import com.john.res.common.BaseResponse
+import com.john.res.common.exception.BadRequestException
+import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -70,10 +72,13 @@ class AccountController(
      * @since 2023.05.27
      */
     @PostMapping("/api/logout")
-    fun logout(userId: String): BaseResponse<Boolean> {
+    fun logout(userId: String, isError: Boolean, response: HttpServletResponse): BaseResponse<Boolean> {
         log.info(" >>> [logout] userId: $userId")
 
         // Resource Server에서 로그아웃처리를 해야하지만 별도 처리없이 true만 리턴
+        if(isError) {
+            throw BadRequestException()
+        }
 
         return BaseResponse.Success(data = true)
     }

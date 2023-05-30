@@ -2,6 +2,7 @@ package com.john.auth.common.handler
 
 import com.john.auth.common.BaseResponse
 import com.john.auth.common.exception.*
+import feign.FeignException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -24,7 +25,7 @@ class ExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun methodArgumentNotValidException(e: MethodArgumentNotValidException): BaseResponse<Void> {
-        log.error(" >>> [methodArgumentNotValidException] message: ${e.message}")
+        log.error(" >>> [MethodArgumentNotValidException] message: ${e.message}")
 
         val message = "Invalid Request Parameter"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -33,7 +34,7 @@ class ExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun httpRequestMethodNotSupportedException(e: HttpRequestMethodNotSupportedException): BaseResponse<Void> {
-        log.error(" >>> [httpRequestMethodNotSupportedException] message: ${e.message}")
+        log.error(" >>> [HttpRequestMethodNotSupportedException] message: ${e.message}")
 
         val message = "Unsupported Media Type"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -42,7 +43,7 @@ class ExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun httpMediaTypeNotSupportedException(request: HttpServletRequest, e: HttpMediaTypeNotSupportedException): BaseResponse<Void> {
-        log.error(" >>> [httpMediaTypeNotSupportedException] message: ${e.message}")
+        log.error(" >>> [HttpMediaTypeNotSupportedException] message: ${e.message}")
 
         val message = "Content-Type '${request.contentType ?: ""}' is not supported"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -60,35 +61,35 @@ class ExceptionHandler {
     @ExceptionHandler(BadRequestException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun badRequestException(e: BadRequestException): BaseResponse<Void> {
-        log.error(" >>> [badRequestException] message: ${e.message}")
-
         val message =
             if(e.message.isNullOrEmpty()) {
                 "Invalid Request Parameter"
             }else {
                 e.message!!
             }
+
+        log.error(" >>> [BadRequestException] message: ${e.message}")
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
 
     @ExceptionHandler(NotFoundException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun notFoundException(e: NotFoundException): BaseResponse<Void> {
-        log.error(" >>> [notFoundException] message: ${e.message}")
-
         val message =
             if(e.message.isNullOrEmpty()) {
                 "Not Found Data"
             }else {
                 e.message!!
             }
+
+        log.error(" >>> [NotFoundException] message: ${e.message}")
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
 
     @ExceptionHandler(UnsupportedResponseTypeException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun unsupportedResponseTypeException(e: UnsupportedResponseTypeException): BaseResponse<Void> {
-        log.error(" >>> [unsupportedResponseTypeException] message: ${e.message}")
+        log.error(" >>> [UnsupportedResponseTypeException] message: ${e.message}")
 
         val message = "Unsupported response type"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -97,7 +98,7 @@ class ExceptionHandler {
     @ExceptionHandler(RedirectMismatchException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun redirectMismatchException(e: RedirectMismatchException): BaseResponse<Void> {
-        log.error(" >>> [redirectMismatchException] message: ${e.message}")
+        log.error(" >>> [RedirectMismatchException] message: ${e.message}")
 
         val message = "RedirectUris mismatch"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -106,7 +107,7 @@ class ExceptionHandler {
     @ExceptionHandler(InvalidScopeException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun invalidScopeException(e: InvalidScopeException): BaseResponse<Void> {
-        log.error(" >>> [invalidScopeException] message: ${e.message}")
+        log.error(" >>> [InvalidScopeException] message: ${e.message}")
 
         val message = "Invalid scope"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -115,7 +116,7 @@ class ExceptionHandler {
     @ExceptionHandler(InvalidClientException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun invalidClientException(e: InvalidClientException): BaseResponse<Void> {
-        log.error(" >>> [invalidClientException] message: ${e.message}")
+        log.error(" >>> [InvalidClientException] message: ${e.message}")
 
         val message = "Invalid Client"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
@@ -133,9 +134,18 @@ class ExceptionHandler {
     @ExceptionHandler(NotRegisteredUserException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun notRegisteredUserException(e: NotRegisteredUserException): BaseResponse<Void> {
-        log.error(" >>> [notRegisteredUserException] message: ${e.message}")
+        log.error(" >>> [NotRegisteredUserException] message: ${e.message}")
 
         val message = "Not Registered User"
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
+    }
+
+    @ExceptionHandler(InternalServerException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun internalServerException(e: InternalServerException): BaseResponse<Void> {
+        log.error(" >>> [InternalServerException] message: ${e.message}")
+
+        val message = "Internal Server Exception"
+        return BaseResponse(status = HttpStatus.INTERNAL_SERVER_ERROR.value(), message = message, data = null)
     }
 }

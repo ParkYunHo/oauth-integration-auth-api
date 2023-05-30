@@ -22,6 +22,7 @@ spring:
 auth:
   url:
     login: http://localhost:8080/login
+    logout: http://localhost:8080/api/logout
     consent: http://localhost:9000/oauth/consent
     authorize: http://localhost:9000/oauth/authorize/code
   conn:
@@ -30,4 +31,6 @@ auth:
       host: localhost:8080
       connect-timeout: 3000
       read-timeout: 5000
+    feign:
+      url: http://localhost:8080
 

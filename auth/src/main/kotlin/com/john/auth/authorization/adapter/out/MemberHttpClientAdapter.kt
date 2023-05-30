@@ -1,6 +1,7 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.application.port.out.RestCallPort
+import com.john.auth.common.constants.RestCallClientType
 import com.john.auth.common.exception.BadRequestException
 import com.john.auth.common.utils.EnvironmentUtils
 import org.slf4j.LoggerFactory
@@ -30,7 +31,7 @@ class MemberHttpClientAdapter(
      * @author yoonho
      * @since 2023.05.28
      */
-    override fun restCallLogoutHttpClient(userId: String) {
+    override fun restCallLogout(userId: String) {
         val queryParams = LinkedMultiValueMap<String, String>()
         queryParams.add("userId", userId)
 
@@ -43,12 +44,23 @@ class MemberHttpClientAdapter(
         )
 
         if(response.statusCode() in 200 until 300) {
-            log.info(" >>> [restCallLogoutHttpClient] response: ${response.body()}")
+            log.info(" >>> [restCallLogout] response: ${response.body()}")
         }else{
-            log.error(" >>> [restCallLogoutHttpClient] Fail to call the Logout API - status: ${response.statusCode()}, body: ${response.body()}")
+            log.error(" >>> [restCallLogout] Fail to call the Logout API - status: ${response.statusCode()}, body: ${response.body()}")
             throw BadRequestException("Fail to call the Logout API")
         }
     }
+
+    /**
+     * RestCall 통신Client 지원여부 조회
+     *
+     * @param type [String]
+     * @return [Boolean]
+     * @author yoonho
+     * @since 2023.05.28
+     */
+    override fun support(type: String): Boolean =
+        type == RestCallClientType.HTTPCLIENT.code
 
     /**
      * HttpRequest Builder 리턴

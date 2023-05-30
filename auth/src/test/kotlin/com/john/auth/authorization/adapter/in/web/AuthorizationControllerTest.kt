@@ -23,7 +23,7 @@ internal class AuthorizationControllerTest(
 ): BehaviorSpec({
     val log = LoggerFactory.getLogger(this::class.java)
 
-    Given("먼저, 로그아웃API 요청이 세팅되어 있다.") {
+    Given("먼저, 로그아웃API(HttpClient) 요청이 세팅되어 있다.") {
         val accessToken = "TEST_ACCESS_TOKEN"
         val userId = "TEST_USER_ID"
 
@@ -31,14 +31,14 @@ internal class AuthorizationControllerTest(
         paramMap.add("target_id_type", "user_id")
         paramMap.add("target_id", userId)
 
-        When("만약, 로그아웃API를 호출하면") {
-            val result = mockMvc.get("/oauth/logout?user") {
+        When("만약, 로그아웃API(HttpClient)를 호출하면") {
+            val result = mockMvc.get("/oauth/logout") {
                 header("Authorization", "Bearer $accessToken")
                 contentType = MediaType.APPLICATION_JSON
                 params = paramMap
             }
 
-            Then("그러면, 로그아웃API 호출결과를 확인한다.") {
+            Then("그러면, 로그아웃API(HttpClient) 호출결과를 확인한다.") {
                 try {
                     val mvcResult = result.andDo { print() }.andReturn()
                 }catch (e: Exception) {
