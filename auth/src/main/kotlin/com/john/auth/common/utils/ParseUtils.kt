@@ -8,6 +8,8 @@ import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.domain.RegisteredClient
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
+import java.io.BufferedReader
+import java.io.InputStream
 import java.net.URLEncoder
 
 /**
@@ -88,5 +90,22 @@ object ParseUtils {
         }
 
         return ""
+    }
+
+    /**
+     * InputStream 문자열 변환
+     *
+     * @param input [InputStream]
+     * @return [String]
+     * @author yoonho
+     * @since 2023.05.31
+     */
+    fun getInputStreamText(input: InputStream): String {
+        val reader = BufferedReader(input.reader())
+        lateinit var content: String
+        reader.use {
+            content = it.readText()
+        }
+        return content
     }
 }

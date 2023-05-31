@@ -1,5 +1,6 @@
 package com.john.auth.authorization.adapter.out
 
+import com.john.auth.authorization.adapter.out.dto.LogoutResponse
 import com.john.auth.config.OpenFeignConfig
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,5 +15,5 @@ interface MemberFeignClient {
         // 에러케이스 TEST 용도
         @RequestParam isError: Boolean = false,
         //
-    ): String
+    ): LogoutResponse
 }

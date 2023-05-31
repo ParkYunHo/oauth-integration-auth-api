@@ -68,7 +68,7 @@ class ExceptionHandler {
                 e.message!!
             }
 
-        log.error(" >>> [BadRequestException] message: ${e.message}")
+        log.error(" >>> [BadRequestException] message: $message")
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
 
@@ -82,7 +82,7 @@ class ExceptionHandler {
                 e.message!!
             }
 
-        log.error(" >>> [NotFoundException] message: ${e.message}")
+        log.error(" >>> [NotFoundException] message: $message")
         return BaseResponse(status = HttpStatus.BAD_REQUEST.value(), message = message, data = null)
     }
 

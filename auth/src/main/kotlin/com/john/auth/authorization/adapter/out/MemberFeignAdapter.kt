@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 class MemberFeignAdapter(
-    private val memberFeignClient: MemberFeignClient
+    private val memberFeignClient: MemberFeignClient,
 ): RestCallPort {
     private val log = LoggerFactory.getLogger(this::class.java)
 

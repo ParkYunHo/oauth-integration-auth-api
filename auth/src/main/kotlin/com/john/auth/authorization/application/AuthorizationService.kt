@@ -262,7 +262,7 @@ class AuthorizationService(
         restCallPort.restCallLogout(userId = userId)
 
         // 토큰정보 만료처리
-//        savePort.logout(userId = userId, accessToken = accessToken)
+        savePort.logout(userId = userId, accessToken = accessToken)
 
         return LogoutDto(userId = userId)
     }

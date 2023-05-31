@@ -9,5 +9,5 @@ import java.io.Serializable
 data class LogoutResponse(
     val status: Int,
     val message: String,
-    val data: Any?
+    val data: Any? = null
 ): Serializable
