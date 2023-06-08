@@ -9,9 +9,9 @@ interface DeleteUseCase {
     /**
      * Client 삭제
      *
-     * @param input [Long]
+     * @param clientId [Long]
      * @author yoonho
      * @since 2023.05.13
      */
-    fun delete(input: Long)
+    fun delete(clientId: Long)
 }

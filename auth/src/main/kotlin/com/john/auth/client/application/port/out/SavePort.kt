@@ -4,6 +4,7 @@ import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.domain.RegisteredClient
+import com.john.auth.client.domain.RegisteredClientUserMapp
 
 /**
  * @author yoonho
@@ -51,4 +52,14 @@ interface SavePort {
      * @since 2023.05.25
      */
     fun registAppUserId(clientId: String, userId: String, appUserId: String)
+
+    /**
+     * AppUserId Unlink
+     *
+     * @param appUserId [String]
+     * @return [RegisteredClientUserMapp]
+     * @author yoonho
+     * @since 2023.06.08
+     */
+    fun unlinkAppUserId(appUserId: String): RegisteredClientUserMapp
 }

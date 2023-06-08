@@ -1,5 +1,7 @@
 package com.john.auth.client.application.port.out
 
+import com.john.auth.client.domain.RegisteredClientUserMapp
+
 /**
  * @author yoonho
  * @since 2023.05.19
@@ -22,9 +24,9 @@ interface FindPort {
      *
      * @param clientId [String]
      * @param userId [String]
-     * @return [String]
+     * @return [RegisteredClientUserMapp]
      * @author yoonho
      * @since 2023.05.25
      */
-    fun findAppUserId(clientId: String, userId: String): String
+    fun findAppUserId(clientId: String, userId: String): RegisteredClientUserMapp
 }

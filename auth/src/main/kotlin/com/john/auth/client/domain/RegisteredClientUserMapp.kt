@@ -29,5 +29,8 @@ class RegisteredClientUserMapp(
     val userId: String = "",
     @Column(name = "CREATED_AT", nullable = false)
     @Comment("등록일자")
-    val createdAt: LocalDateTime = LocalDateTime.now()
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    @Column(name = "EXPIRED_AT")
+    @Comment("연결해제일자")
+    var expiredAt: LocalDateTime? = null
 )

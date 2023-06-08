@@ -248,15 +248,9 @@ class AuthorizationService(
      * @since 2023.05.27
      */
     override fun logout(userId: String, accessToken: String): LogoutDto {
-        // TODO:
-        //      - Spring Cloud Feign 사용해서 Resource Server 로그아웃 API 호출
-        //          (Spring Cloud Feign, java.net.HttpClient, webflux - WebClient 다 구현해볼 것)
-        //      - 성공응답시, AccessToken, RefreshToken 관련 ExpiredAt를 현재 날짜로 변경
-        //      - 로그아웃 전체 성공시, target_id 응답
-
         // Resource Server 로그아웃API 호출
-        val restCallType = RestCallClientType.OPENFEIGN.code
-//        val restCallType = RestCallClientType.HTTPCLIENT.code
+        val restCallType = RestCallClientType.OPENFEIGN.code        // OpenFeign
+//        val restCallType = RestCallClientType.HTTPCLIENT.code     // HttpClient
 
         val restCallPort = restCallPorts.find { it.support(type = restCallType) } ?: throw NotFoundException()
         restCallPort.restCallLogout(userId = userId)

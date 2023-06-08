@@ -6,10 +6,14 @@ import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
 import com.john.auth.client.application.port.`in`.DeleteUseCase
 import com.john.auth.client.application.port.`in`.RegistUseCase
+import com.john.auth.client.application.port.`in`.UnlinkUseCase
 import com.john.auth.client.application.port.`in`.UpdateUseCase
 import com.john.auth.common.BaseResponse
 import com.john.auth.common.constants.ReIssueType
+import com.john.auth.common.exception.BadRequestException
 import com.john.auth.common.exception.NotFoundException
+import com.john.auth.common.utils.ParseUtils
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -22,7 +26,8 @@ import org.springframework.web.bind.annotation.*
 class ClientController(
     private val registUseCase: RegistUseCase,
     private val updateUseCase: UpdateUseCase,
-    private val deleteUseCase: DeleteUseCase
+    private val deleteUseCase: DeleteUseCase,
+    private val unlinkUseCase: UnlinkUseCase
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -87,10 +92,33 @@ class ClientController(
      * @since 2023.05.13
      */
     @DeleteMapping("/api/client/{clientId}")
-    fun delete(@PathVariable("clientId") input: Long): BaseResponse<Void> {
-        log.info(" >>> [delete] input: $input")
+    fun delete(@PathVariable("clientId") clientId: Long): BaseResponse<Void> {
+        log.info(" >>> [delete] clientId: $clientId")
 
-        deleteUseCase.delete(input = input)
+        deleteUseCase.delete(clientId = clientId)
+        return BaseResponse.SuccessNoContent()
+    }
+
+    /**
+     * Client Unlink
+     *
+     * @param clientId [Long]
+     * @param request [HttpServletRequest]
+     * @return [BaseResponse]<[Void]>
+     * @author yoonho
+     * @since 2023.05.31
+     */
+    @PostMapping("/api/client/unlink/{clientId}")
+    fun unlink(@PathVariable("clientId") clientId: Long, request: HttpServletRequest): BaseResponse<Void> {
+        val accessToken = ParseUtils.getHeaderBearerToken(request)
+        log.info(" >>> [unlink] token: $accessToken, clientId: $clientId")
+
+        if(accessToken.isEmpty()) {
+            log.error(" >>> [unlink] Empty Access Token")
+            throw BadRequestException()
+        }
+
+        unlinkUseCase.unlink(clientId = clientId, accessToken = accessToken)
         return BaseResponse.SuccessNoContent()
     }
 

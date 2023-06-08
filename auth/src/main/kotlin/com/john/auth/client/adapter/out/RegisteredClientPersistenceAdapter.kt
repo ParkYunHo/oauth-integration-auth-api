@@ -201,8 +201,27 @@ class RegisteredClientPersistenceAdapter(
      * @author yoonho
      * @since 2023.05.25
      */
-    override fun findAppUserId(clientId: String, userId: String): String =
+    override fun findAppUserId(clientId: String, userId: String): RegisteredClientUserMapp =
         registeredClientUserMappRepository.findByClientIdAndUserId(clientId = clientId, userId = userId)
             .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
-            .appUserId
+
+    /**
+     * AppUserId Unlink
+     *
+     * @param appUserId [String]
+     * @return [RegisteredClientUserMapp]
+     * @author yoonho
+     * @since 2023.06.08
+     */
+    override fun unlinkAppUserId(appUserId: String): RegisteredClientUserMapp {
+        // AppUserId 조회
+        val registeredClientUserMapp = registeredClientUserMappRepository.findById(appUserId)
+            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
+
+        // 만료일자 설정
+        registeredClientUserMapp.expiredAt = LocalDateTime.now()
+
+        // 변경된 만료일자 저장
+        return registeredClientUserMappRepository.save(registeredClientUserMapp)
+    }
 }
