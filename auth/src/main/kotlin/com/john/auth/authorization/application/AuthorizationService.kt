@@ -36,6 +36,7 @@ class AuthorizationService(
     private val findPort: FindPort,
     private val savePort: SavePort,
     private val restCallPorts: List<RestCallPort>,
+
     private val registAppUserIdUseCase: RegistAppUserIdUseCase,
     private val findAppUserIdUseCase: FindAppUserIdUseCase
 ):  AuthorizationCodeCheckUseCase,

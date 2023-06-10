@@ -26,8 +26,8 @@ class ClientService(
     private val deletePort: DeletePort,
     private val findPort: FindPort,
 
-    private val accessTokenIntrospectUseCase: AccessTokenIntrospectUseCase,
-    private val logoutUseCase: LogoutUseCase
+//    private val accessTokenIntrospectUseCase: AccessTokenIntrospectUseCase,
+//    private val logoutUseCase: LogoutUseCase
 ): RegistUseCase,
     UpdateUseCase,
     DeleteUseCase,
@@ -160,13 +160,13 @@ class ClientService(
      * @since 2023.05.31
      */
     override fun unlink(clientId: Long, accessToken: String) {
-        // accessToken으로 appUserId 조회
-        val introspectDto = accessTokenIntrospectUseCase.introspect(accessToken = accessToken)
-
-        // appUserId로 연결된 clientId 연결끊기
-        val registeredClientUserMapp = savePort.unlinkAppUserId(appUserId = introspectDto.appUserId)
-
-        // 로그아웃 처리 (access_token, refresh_token, authorization_code 만료처리)
-        logoutUseCase.logout(userId = registeredClientUserMapp.userId, accessToken = accessToken)
+//        // accessToken으로 appUserId 조회
+//        val introspectDto = accessTokenIntrospectUseCase.introspect(accessToken = accessToken)
+//
+//        // appUserId로 연결된 clientId 연결끊기
+//        val registeredClientUserMapp = savePort.unlinkAppUserId(appUserId = introspectDto.appUserId)
+//
+//        // 로그아웃 처리 (access_token, refresh_token, authorization_code 만료처리)
+//        logoutUseCase.logout(userId = registeredClientUserMapp.userId, accessToken = accessToken)
     }
 }
