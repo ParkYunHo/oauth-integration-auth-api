@@ -7,6 +7,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3")
     implementation("org.springframework.vault:spring-vault-core:3.0.0")
 
+    runtimeOnly("com.mysql:mysql-connector-j")
+
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 }

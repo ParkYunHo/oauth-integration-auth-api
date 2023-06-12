@@ -12,7 +12,7 @@ import java.time.LocalDateTime
  * @since 2023.05.13
  */
 @Entity
-@Table(name = "OAUTH2_AUTHORIZATION")
+@Table(catalog = "MP_CMS", name = "OAUTH2_AUTHORIZATION")
 class Authorization(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

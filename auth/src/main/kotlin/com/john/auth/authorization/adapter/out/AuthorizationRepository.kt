@@ -1,7 +1,9 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.domain.Authorization
+import com.john.auth.common.repository.PocRepository
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 import java.util.*
 
 /**

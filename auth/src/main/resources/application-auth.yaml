@@ -1,23 +1,32 @@
+
 server:
   port: 9000
 spring:
+  config:
+    activate:
+      on-profile: default
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
     generate-ddl: true
-  h2:
-    console:
-      enabled: true
-      path: /h2
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
     username: sa
+    hikari:
+      connection-timeout: 5000
+      minimum-idle: 10
+      maximum-pool-size: 100
   sql:
     init:
       data-locations: classpath*:schema.sql
       mode: always
+
 
 auth:
   url:
@@ -34,6 +43,11 @@ auth:
     feign:
       url: http://localhost:8080
 
+hibernate:
+  show_sql: false
+  format_sql: false
+  physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
 vault:
   uri: http://localhost:8200
   token: admin
@@ -41,4 +55,4 @@ vault:
     role-id:
     secret-id:
   secret:
-    appconfig: kv/oauth2-app/local
+    appconfig: oauth2-app/local
