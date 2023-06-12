@@ -11,8 +11,8 @@ import com.john.auth.authorization.application.port.`in`.AccessTokenIntrospectUs
 import com.john.auth.authorization.application.port.`in`.AccessTokenRegistUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeCheckUseCase
 import com.john.auth.authorization.application.port.`in`.AuthorizationCodeRegistUseCase
-import com.john.auth.authorization.application.port.out.FindPort
-import com.john.auth.authorization.application.port.out.SavePort
+import com.john.auth.authorization.application.port.out.AuthorizationFindPort
+import com.john.auth.authorization.application.port.out.AuthorizationSavePort
 import com.john.auth.client.application.port.`in`.FindAppUserIdUseCase
 import com.john.auth.authorization.application.port.`in`.LogoutUseCase
 import com.john.auth.authorization.application.port.out.RestCallPort
@@ -33,12 +33,12 @@ import java.time.temporal.ChronoUnit
  */
 @Service
 class AuthorizationService(
-    private val findPort: FindPort,
-    private val savePort: SavePort,
-    private val restCallPorts: List<RestCallPort>,
+        private val authorizationFindPort: AuthorizationFindPort,
+        private val authorizationSavePort: AuthorizationSavePort,
+        private val restCallPorts: List<RestCallPort>,
 
-    private val registAppUserIdUseCase: RegistAppUserIdUseCase,
-    private val findAppUserIdUseCase: FindAppUserIdUseCase
+        private val registAppUserIdUseCase: RegistAppUserIdUseCase,
+        private val findAppUserIdUseCase: FindAppUserIdUseCase
 ):  AuthorizationCodeCheckUseCase,
     AuthorizationCodeRegistUseCase,
     AccessTokenRegistUseCase,
@@ -56,7 +56,7 @@ class AuthorizationService(
      * @since 2023.05.15
      */
     override fun check(input: AuthorizationCodeInput): String {
-        val registeredClient = findPort.checkClient(clientId = input.client_id, clientSecret = input.client_secret)
+        val registeredClient = authorizationFindPort.checkClient(clientId = input.client_id, clientSecret = input.client_secret)
 
         // grant_type 체크
         if(!registeredClient.authorizationGrantTypes.contains(input.response_type)) {
@@ -102,7 +102,7 @@ class AuthorizationService(
             authorizationCodeExpiresAt = LocalDateTime.now().plusMinutes(10L)
         )
         // 인가코드 저장
-        savePort.authorizationCodeRegister(input = authorizationCodeInfo)
+        authorizationSavePort.authorizationCodeRegister(input = authorizationCodeInfo)
         // AppUserId 발급
         registAppUserIdUseCase.registAppUserId(clientId = input.client_id, userId = input.userId)
 
@@ -119,7 +119,7 @@ class AuthorizationService(
      */
     override fun register(input: AccessTokenInput): TokenInfo {
         // Client 인증로직
-        findPort.checkClient(clientId = input.client_id, clientSecret = input.client_secret)
+        authorizationFindPort.checkClient(clientId = input.client_id, clientSecret = input.client_secret)
 
         when(input.grant_type) {
             "authorization_code" -> {
@@ -127,7 +127,7 @@ class AuthorizationService(
                     throw BadRequestException()
                 }
 
-                val authorization = findPort.checkAuthorizationCode(clientId = input.client_id, authorizationCode = input.code)
+                val authorization = authorizationFindPort.checkAuthorizationCode(clientId = input.client_id, authorizationCode = input.code)
 
                 // 만료여부 체크
                 if(LocalDateTime.now().isAfter(authorization.authorizationCodeExpiresAt!!)) {
@@ -150,7 +150,7 @@ class AuthorizationService(
                 authorization.refreshTokenExpiresAt = LocalDateTime.now().plusMonths(2L)
 
                 // 토큰정보 저장
-                savePort.tokenInfoRegister(authorization = authorization)
+                authorizationSavePort.tokenInfoRegister(authorization = authorization)
 
                 return TokenInfo(
                     token_type = authorization.accessTokenType!!,
@@ -165,7 +165,7 @@ class AuthorizationService(
                     throw BadRequestException()
                 }
 
-                val authorization = findPort.checkRefreshToken(clientId = input.client_id, refreshToken = input.refresh_token)
+                val authorization = authorizationFindPort.checkRefreshToken(clientId = input.client_id, refreshToken = input.refresh_token)
 
                 // 만료여부 체크
                 if(LocalDateTime.now().isAfter(authorization.refreshTokenExpiresAt!!)) {
@@ -195,7 +195,7 @@ class AuthorizationService(
                 }
 
                 // 토큰정보 저장
-                savePort.tokenInfoRegister(authorization = authorization)
+                authorizationSavePort.tokenInfoRegister(authorization = authorization)
 
                 return TokenInfo(
                     token_type = authorization.accessTokenType!!,
@@ -218,7 +218,7 @@ class AuthorizationService(
      * @since 2023.05.24
      */
     override fun introspect(accessToken: String): IntrospectDto {
-        val authorization = findPort.checkAccessToken(accessToken = accessToken)
+        val authorization = authorizationFindPort.checkAccessToken(accessToken = accessToken)
         val expiresIn = authorization.accessTokenExpiresAt!!
 
         // 만료여부 체크
@@ -257,7 +257,7 @@ class AuthorizationService(
         restCallPort.restCallLogout(userId = userId)
 
         // 토큰정보 만료처리
-        savePort.logout(userId = userId, accessToken = accessToken)
+        authorizationSavePort.logout(userId = userId, accessToken = accessToken)
 
         return LogoutDto(userId = userId)
     }

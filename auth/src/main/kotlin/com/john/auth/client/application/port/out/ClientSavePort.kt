@@ -10,7 +10,7 @@ import com.john.auth.client.domain.RegisteredClientUserMapp
  * @author yoonho
  * @since 2023.05.11
  */
-interface SavePort {
+interface ClientSavePort {
 
     /**
      * Client 등록

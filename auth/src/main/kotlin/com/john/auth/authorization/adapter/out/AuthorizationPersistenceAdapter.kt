@@ -1,8 +1,8 @@
 package com.john.auth.authorization.adapter.out
 
 import com.john.auth.authorization.application.dto.AuthorizationCodeDto
-import com.john.auth.authorization.application.port.out.FindPort
-import com.john.auth.authorization.application.port.out.SavePort
+import com.john.auth.authorization.application.port.out.AuthorizationFindPort
+import com.john.auth.authorization.application.port.out.AuthorizationSavePort
 import com.john.auth.authorization.domain.Authorization
 import com.john.auth.client.adapter.out.RegisteredClientRepository
 import com.john.auth.client.domain.RegisteredClient
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 class AuthorizationPersistenceAdapter(
     private val authorizationRepository: AuthorizationRepository,
     private val clientRepository: RegisteredClientRepository
-): FindPort, SavePort {
+): AuthorizationFindPort, AuthorizationSavePort {
 
     /**
      * Client 인증

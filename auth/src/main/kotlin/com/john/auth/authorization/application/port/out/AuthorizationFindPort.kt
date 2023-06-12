@@ -1,6 +1,5 @@
 package com.john.auth.authorization.application.port.out
 
-import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeInput
 import com.john.auth.authorization.domain.Authorization
 import com.john.auth.client.domain.RegisteredClient
 
@@ -8,7 +7,7 @@ import com.john.auth.client.domain.RegisteredClient
  * @author yoonho
  * @since 2023.05.14
  */
-interface FindPort {
+interface AuthorizationFindPort {
 
     /**
      * Client 인증

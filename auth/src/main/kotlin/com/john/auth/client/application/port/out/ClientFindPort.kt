@@ -6,7 +6,7 @@ import com.john.auth.client.domain.RegisteredClientUserMapp
  * @author yoonho
  * @since 2023.05.19
  */
-interface FindPort {
+interface ClientFindPort {
 
     /**
      * Client의 Scopes 조회

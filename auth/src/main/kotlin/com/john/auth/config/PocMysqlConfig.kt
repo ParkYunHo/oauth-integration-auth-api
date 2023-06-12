@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.vault.annotation.VaultPropertySource
 import javax.sql.DataSource
 
 /**
@@ -15,13 +16,13 @@ import javax.sql.DataSource
  * @since 2023.06.08
  */
 @Configuration
-@EnableTransactionManagement
+//@EnableTransactionManagement
 //@VaultPropertySource("\${vault.secret.appconfig}")
-@EnableJpaRepositories(
-    entityManagerFactoryRef = "pocEntityManagerFactory",
-    transactionManagerRef = "pocTransactionManager",
-    basePackageClasses = [PocRepository::class]
-)
+//@EnableJpaRepositories(
+//    entityManagerFactoryRef = "pocEntityManagerFactory",
+//    transactionManagerRef = "pocTransactionManager",
+//    basePackageClasses = [PocRepository::class]
+//)
 class PocMysqlConfig(
     private val env: Environment
 ) {
@@ -31,18 +32,18 @@ class PocMysqlConfig(
     //  - Docker로 DB 2개 띄우고 따로 설정해볼것 (h2말고, MySQL인스턴스 port번호 다르게 2개 띄울것)
     //  - Vault Docker 띄우고 Vault 설정
 
-    @Bean
-    fun pocDataSource(): DataSource {
-
-    }
-
-    @Bean
-    fun pocEntityManagerFactory(): LocalContainerEntityManagerFactoryBean {
-
-    }
-
-    @Bean
-    fun pocTransactionManager(): JpaTransactionManager {
-
-    }
+//    @Bean
+//    fun pocDataSource(): DataSource {
+//
+//    }
+//
+//    @Bean
+//    fun pocEntityManagerFactory(): LocalContainerEntityManagerFactoryBean {
+//
+//    }
+//
+//    @Bean
+//    fun pocTransactionManager(): JpaTransactionManager {
+//
+//    }
 }

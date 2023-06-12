@@ -3,9 +3,9 @@ package com.john.auth.client.adapter.out
 import com.john.auth.client.adapter.`in`.web.dto.ClientReIssueInput
 import com.john.auth.client.adapter.`in`.web.dto.ClientUpdateInput
 import com.john.auth.client.application.dto.RegisteredClientEntity
-import com.john.auth.client.application.port.out.DeletePort
-import com.john.auth.client.application.port.out.FindPort
-import com.john.auth.client.application.port.out.SavePort
+import com.john.auth.client.application.port.out.ClientDeletePort
+import com.john.auth.client.application.port.out.ClientFindPort
+import com.john.auth.client.application.port.out.ClientSavePort
 import com.john.auth.client.domain.RegisteredClient
 import com.john.auth.client.domain.RegisteredClientUserMapp
 import com.john.auth.common.constants.ReIssueType
@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 class RegisteredClientPersistenceAdapter(
     private val registeredClientRepository: RegisteredClientRepository,
     private val registeredClientUserMappRepository: RegisteredClientUserMappRepository
-): SavePort, DeletePort, FindPort {
+): ClientSavePort, ClientDeletePort, ClientFindPort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
