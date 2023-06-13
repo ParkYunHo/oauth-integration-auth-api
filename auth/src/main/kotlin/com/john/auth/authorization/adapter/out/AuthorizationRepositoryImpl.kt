@@ -47,6 +47,7 @@ class AuthorizationRepositoryImpl(
                 )
                 .execute()
 
+    // TODO: 업데이트문으로 변경할 것!!!
     @Transactional
     fun saveAuthorization(input: Authorization): Long =
             queryFactory

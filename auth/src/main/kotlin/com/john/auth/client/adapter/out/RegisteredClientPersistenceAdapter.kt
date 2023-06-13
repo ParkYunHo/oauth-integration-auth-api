@@ -23,8 +23,11 @@ import java.time.LocalDateTime
  */
 @Repository
 class RegisteredClientPersistenceAdapter(
-    private val registeredClientRepository: RegisteredClientRepository,
-    private val registeredClientUserMappRepository: RegisteredClientUserMappRepository
+//    private val registeredClientRepository: RegisteredClientRepository,
+//    private val registeredClientUserMappRepository: RegisteredClientUserMappRepository,
+
+    private val registeredClientRepositoryImpl: RegisteredClientRepositoryImpl,
+    private val registeredClientUserMappRepositoryImpl: RegisteredClientUserMappRepositoryImpl
 ): ClientSavePort, ClientDeletePort, ClientFindPort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -41,7 +44,9 @@ class RegisteredClientPersistenceAdapter(
             log.info(" >>> [regist] input: $input")
 
             val domain = ParseUtils.toDomain(entity = input)
-            return registeredClientRepository.save(domain)
+            registeredClientRepositoryImpl.insertRegisteredClient(input = domain)
+            return domain
+//            return registeredClientRepository.save(domain)
         } catch (e: Exception) {
             log.error(" >>> [regist] Exception occurs - message: ${e.message}")
             throw BadRequestException("Client 등록에 실패하였습니다.")
@@ -58,8 +63,10 @@ class RegisteredClientPersistenceAdapter(
      */
     override fun update(input: ClientUpdateInput): RegisteredClient {
         try {
-            val registeredClient = registeredClientRepository.findById(input.clientId.toLong())
-                .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+//            val registeredClient = registeredClientRepository.findById(input.clientId.toLong())
+//                .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+            val registeredClient = registeredClientRepositoryImpl.findRegisteredClientById(clientId = input.clientId.toLong())
+                    ?: throw NotFoundException("등록된 Client가 없습니다.")
 
             // ClientName 체크
             if(input.clientName != registeredClient.clientName && !input.clientName.isNullOrEmpty()) {
@@ -70,7 +77,9 @@ class RegisteredClientPersistenceAdapter(
                 registeredClient.redirectUris = input.redirectUris
             }
 
-            return registeredClientRepository.save(registeredClient)
+            registeredClientRepositoryImpl.insertRegisteredClient(input = registeredClient)
+            return registeredClient
+//            return registeredClientRepository.save(registeredClient)
         } catch (ne: NotFoundException) {
             throw ne
         } catch (be: BadRequestException) {
@@ -91,8 +100,10 @@ class RegisteredClientPersistenceAdapter(
      */
     override fun reIssue(input: ClientReIssueInput): RegisteredClient {
         try {
-            val registeredClient = registeredClientRepository.findById(input.clientId.toLong())
-                .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+//            val registeredClient = registeredClientRepository.findById(input.clientId.toLong())
+//                .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+            val registeredClient = registeredClientRepositoryImpl.findRegisteredClientById(clientId = input.clientId.toLong())
+                ?: throw NotFoundException("등록된 Client가 없습니다.")
 
             val reIssueValue = Base64StringKeyGenerator.generateKey(keyLength = 32)
             when(input.target) {
@@ -122,7 +133,9 @@ class RegisteredClientPersistenceAdapter(
                 }
             }
 
-            return registeredClientRepository.save(registeredClient)
+            registeredClientRepositoryImpl.insertRegisteredClient(input = registeredClient)
+            return registeredClient
+//            return registeredClientRepository.save(registeredClient)
         } catch (ne: NotFoundException) {
             throw ne
         } catch (be: BadRequestException) {
@@ -142,11 +155,16 @@ class RegisteredClientPersistenceAdapter(
      */
     override fun delete(input: Long) {
         try {
-            if(!registeredClientRepository.existsById(input)) {
-                throw NotFoundException("등록된 Client가 없습니다.")
-            }
+//            if(!registeredClientRepository.existsById(input)) {
+//                throw NotFoundException("등록된 Client가 없습니다.")
+//            }
 
-            registeredClientRepository.deleteById(input)
+            registeredClientRepositoryImpl.findRegisteredClientById(clientId = input)
+                ?: throw NotFoundException("등록된 Client가 없습니다.")
+
+//            registeredClientRepository.deleteById(input)
+
+            registeredClientRepositoryImpl.deleteById(clientId = input)
         } catch (ne: NotFoundException) {
             throw ne
         } catch (e: Exception) {
@@ -165,12 +183,14 @@ class RegisteredClientPersistenceAdapter(
      * @since 2023.05.19
      */
     override fun findScopes(clientId: String, clientSecret: String): String =
-        registeredClientRepository.findByRestClientIdAndClientSecret(
-            restClientId = clientId,
-            clientSecret = clientSecret
-        )
-            .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
-            .scopes
+//        registeredClientRepository.findByRestClientIdAndClientSecret(
+//            restClientId = clientId,
+//            clientSecret = clientSecret
+//        )
+//            .orElseThrow { throw NotFoundException("등록된 Client가 없습니다.") }
+//            .scopes
+        registeredClientRepositoryImpl.findRegisteredClientByClientInfo(clientId = clientId, clientSecret = clientSecret)?.scopes
+            ?: throw NotFoundException("등록된 Client가 없습니다.")
 
     /**
      * AppUserId 등록
@@ -182,14 +202,22 @@ class RegisteredClientPersistenceAdapter(
      * @since 2023.05.25
      */
     override fun registAppUserId(clientId: String, userId: String, appUserId: String) {
-        registeredClientUserMappRepository.save(
-            RegisteredClientUserMapp(
-                appUserId = appUserId,
-                clientId = clientId,
-                userId = userId,
-                createdAt = LocalDateTime.now()
-            )
+        val registeredClientUserMapp = RegisteredClientUserMapp(
+            appUserId = appUserId,
+            clientId = clientId,
+            userId = userId,
+            createdAt = LocalDateTime.now()
         )
+
+        registeredClientUserMappRepositoryImpl.insertRegisteredUserMapp(input = registeredClientUserMapp)
+//        registeredClientUserMappRepository.save(
+//            RegisteredClientUserMapp(
+//                appUserId = appUserId,
+//                clientId = clientId,
+//                userId = userId,
+//                createdAt = LocalDateTime.now()
+//            )
+//        )
     }
 
     /**
@@ -202,8 +230,10 @@ class RegisteredClientPersistenceAdapter(
      * @since 2023.05.25
      */
     override fun findAppUserId(clientId: String, userId: String): RegisteredClientUserMapp =
-        registeredClientUserMappRepository.findByClientIdAndUserId(clientId = clientId, userId = userId)
-            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
+        registeredClientUserMappRepositoryImpl.findRegisteredUserMappByClientIdAndUserId(clientId = clientId, userId = userId)
+            ?: throw NotFoundException("등록된 AppUserId가 없습니다.")
+//        registeredClientUserMappRepository.findByClientIdAndUserId(clientId = clientId, userId = userId)
+//            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
 
     /**
      * AppUserId Unlink
@@ -214,14 +244,22 @@ class RegisteredClientPersistenceAdapter(
      * @since 2023.06.08
      */
     override fun unlinkAppUserId(appUserId: String): RegisteredClientUserMapp {
-        // AppUserId 조회
-        val registeredClientUserMapp = registeredClientUserMappRepository.findById(appUserId)
-            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
+        registeredClientUserMappRepositoryImpl.updateRegisteredUserMappExpiredAt(appUserId = appUserId)
 
-        // 만료일자 설정
-        registeredClientUserMapp.expiredAt = LocalDateTime.now()
-
-        // 변경된 만료일자 저장
-        return registeredClientUserMappRepository.save(registeredClientUserMapp)
+        return registeredClientUserMappRepositoryImpl.findRegisteredUserMappByClientIdAndUserId(appUserId = appUserId)
+            ?: throw NotFoundException("등록된 AppUserId가 없습니다.")
+//        // AppUserId 조회
+////        val registeredClientUserMapp = registeredClientUserMappRepository.findById(appUserId)
+////            .orElseThrow { throw NotFoundException("등록된 AppUserId가 없습니다.") }
+//        val registeredClientUserMapp = registeredClientUserMappRepositoryImpl.findRegisteredUserMappByClientIdAndUserId(appUserId = appUserId)
+//            ?: throw NotFoundException("등록된 AppUserId가 없습니다.")
+//
+//        // 만료일자 설정
+//        registeredClientUserMapp.expiredAt = LocalDateTime.now()
+//
+//        // 변경된 만료일자 저장
+//
+//        return registeredClientUserMapp
+////        return registeredClientUserMappRepository.save(registeredClientUserMapp)
     }
 }

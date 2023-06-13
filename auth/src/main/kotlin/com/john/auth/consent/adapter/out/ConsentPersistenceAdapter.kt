@@ -2,6 +2,7 @@ package com.john.auth.consent.adapter.out
 
 import com.john.auth.authorization.adapter.`in`.web.dto.AuthorizationCodeRedirectInput
 import com.john.auth.common.exception.InvalidScopeException
+import com.john.auth.common.exception.NotFoundException
 import com.john.auth.consent.application.port.out.ConsentFindPort
 import com.john.auth.consent.application.port.out.ConsentSavePort
 import com.john.auth.consent.domain.Consent
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 class ConsentPersistenceAdapter(
-    private val consentRepository: ConsentRepository
+//    private val consentRepository: ConsentRepository,
+
+    private val consentRepositoryImpl: ConsentRepositoryImpl
 ): ConsentFindPort, ConsentSavePort {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -28,19 +31,21 @@ class ConsentPersistenceAdapter(
      * @since 2023.05.19
      */
     override fun findConsent(input: AuthorizationCodeRedirectInput): Boolean {
-        val registeredConsent = consentRepository.findById(
-            ConsentPk(
-                registeredClientId = input.client_id,
-                principalName = input.userId!!
-            )
-        )
+//        val registeredConsent = consentRepository.findById(
+//            ConsentPk(
+//                registeredClientId = input.client_id,
+//                principalName = input.userId!!
+//            )
+//        )
 
-        if(registeredConsent.isEmpty) {
+        val registeredConsent = consentRepositoryImpl.findConsent(clientId = input.client_id, userId = input.userId!!)
+
+        if(registeredConsent == null) {
             // Consent 미등록시 등록화면으로 이동
             return false
         }else {
             // 올바른 scope가 아닐 경우 Exception throw
-            if(!registeredConsent.get().authorities.contains(input.scope)) {
+            if(!registeredConsent.authorities.contains(input.scope)) {
                 throw InvalidScopeException()
             }
         }
@@ -56,14 +61,15 @@ class ConsentPersistenceAdapter(
      * @since 2023.05.19
      */
     override fun saveConsent(input: AuthorizationCodeRedirectInput) {
-        consentRepository.save(
-            Consent(
-                consentPk = ConsentPk(
-                    registeredClientId = input.client_id,
-                    principalName = input.userId!!
-                ),
-                authorities = input.scope
-            )
-        )
+        consentRepositoryImpl.saveConsent(input = input)
+//        consentRepository.save(
+//            Consent(
+//                consentPk = ConsentPk(
+//                    registeredClientId = input.client_id,
+//                    principalName = input.userId!!
+//                ),
+//                authorities = input.scope
+//            )
+//        )
     }
 }
