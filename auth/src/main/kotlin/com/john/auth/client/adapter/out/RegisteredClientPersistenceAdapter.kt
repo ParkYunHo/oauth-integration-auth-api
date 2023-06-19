@@ -23,6 +23,8 @@ import java.time.LocalDateTime
  */
 @Repository
 class RegisteredClientPersistenceAdapter(
+    private val registeredClientRepository: RegisteredClientRepository,
+
     private val registeredClientRepositoryImpl: RegisteredClientRepositoryImpl,
     private val registeredClientUserMappRepositoryImpl: RegisteredClientUserMappRepositoryImpl
 ): ClientSavePort, ClientDeletePort, ClientFindPort {

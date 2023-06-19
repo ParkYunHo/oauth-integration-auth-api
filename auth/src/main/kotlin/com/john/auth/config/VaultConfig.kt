@@ -2,6 +2,8 @@ package com.john.auth.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.vault.authentication.AppRoleAuthentication
+import org.springframework.vault.authentication.AppRoleAuthenticationOptions
 import org.springframework.vault.authentication.ClientAuthentication
 import org.springframework.vault.authentication.TokenAuthentication
 import org.springframework.vault.client.VaultEndpoint
@@ -22,6 +24,28 @@ class VaultConfig: AbstractVaultConfiguration() {
     }
 
     override fun clientAuthentication(): ClientAuthentication {
-        return TokenAuthentication(environment.getProperty("vault.token") ?: throw NullPointerException("vault token이 없습니다."))
+        val vaultToken = environment.getProperty("vault.token")
+        if(!vaultToken.isNullOrEmpty()) {
+            // Token
+            return TokenAuthentication(environment.getProperty("vault.token") ?: throw NullPointerException("vault token이 없습니다."))
+        }else {
+            // AppRole
+            val options = AppRoleAuthenticationOptions.builder()
+                .roleId(
+                    AppRoleAuthenticationOptions.RoleId.provided(
+                        environment.getProperty("vault.app-role.role-id") ?: throw NullPointerException("vault role-id가 없습니다.")
+                    )
+                )
+                .secretId(
+                    AppRoleAuthenticationOptions.SecretId.provided(
+                        environment.getProperty("vault.app-role.secret-id") ?: throw NullPointerException("vault secret-id가 없습니다.")
+                    )
+                )
+                .build()
+
+            return AppRoleAuthentication(options, restOperations())
+        }
     }
+
+
 }

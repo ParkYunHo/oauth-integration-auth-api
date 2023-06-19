@@ -13,6 +13,10 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 }
 
+project.delete(
+    files("$buildDir/generated/source/kapt/main")
+)
+
 kotlin.sourceSets.main {
     kotlin.srcDir("$buildDir/generated/source/kapt/main")
 }

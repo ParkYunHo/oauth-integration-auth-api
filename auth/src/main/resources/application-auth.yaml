@@ -48,11 +48,22 @@ hibernate:
   format_sql: false
   physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
+# Vault AppRole
 vault:
   uri: http://localhost:8200
-  token: admin
+  token:
   app-role:
-    role-id:
-    secret-id:
+    role-id: 9f85afd3-01cc-5e53-17e8-d408addbd711
+    secret-id: f6b4049b-e191-35df-de8f-484a875854bf
   secret:
     appconfig: oauth2-app/local
+
+# Vault Token
+#vault:
+#  uri: http://localhost:8200
+#  token: admin
+#  app-role:
+#    role-id:
+#    secret-id:
+#  secret:
+#    appconfig: oauth2-app/local

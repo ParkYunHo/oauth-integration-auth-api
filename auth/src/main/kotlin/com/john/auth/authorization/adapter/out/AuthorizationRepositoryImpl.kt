@@ -47,35 +47,6 @@ class AuthorizationRepositoryImpl(
             )
             .execute()
 
-
-    // TODO: 업데이트문으로 변경할 것!!!
-    @Transactional
-    fun insertAuthorization(input: Authorization): Long =
-        queryFactory
-            .insert(authorization)
-            .columns(
-                authorization.registeredClientId,
-                authorization.principalName,
-                authorization.authorizationGrantType,
-                authorization.authorizedScopes,
-                authorization.state,
-                authorization.authorizationCodeValue,
-                authorization.authorizationCodeIssuedAt,
-                authorization.authorizationCodeExpiresAt,
-
-                )
-            .values(
-                input.registeredClientId,
-                input.principalName,
-                input.authorizationGrantType,
-                input.authorizedScopes,
-                input.state,
-                input.authorizationCodeValue,
-                input.authorizationCodeIssuedAt,
-                input.authorizationCodeExpiresAt
-            )
-            .execute()
-
     @Transactional
     fun updateAuthorizationToken(input: Authorization, hasRefreshToken: Boolean): Long {
         val query = queryFactory

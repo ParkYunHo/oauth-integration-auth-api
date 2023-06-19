@@ -25,18 +25,12 @@ import javax.sql.DataSource
 @EnableJpaRepositories(
     entityManagerFactoryRef = "pocEntityManagerFactory",
     transactionManagerRef = "pocTransactionManager",
-    basePackageClasses = [PocRepository::class]
+//    basePackageClasses = [PocRepository::class]
+    basePackages = ["com.john.auth"]
 )
 class PocMysqlConfig(
     private val env: Environment
 ) {
-
-    // TODO:
-    //  - QueryDSL 설정
-    //  - Docker로 DB 2개 띄우고 따로 설정해볼것 (h2말고, MySQL인스턴스 port번호 다르게 2개 띄울것)
-    //  - Vault Docker 띄우고 Vault 설정
-    //  - Vault 연동시 appRole 방식으로 할 것
-
     @Bean
     fun pocDataSource(): DataSource {
         val hikariConfig = HikariConfig().apply {
