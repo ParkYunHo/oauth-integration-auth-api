@@ -2,11 +2,13 @@ package com.john.auth.client.adapter.out
 
 import com.john.auth.client.domain.QRegisteredClient
 import com.john.auth.client.domain.RegisteredClient
+import com.john.auth.common.constants.ReIssueType
 import com.john.auth.common.repository.PocRepository
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 /**
  * @author yoonho
@@ -70,6 +72,55 @@ class RegisteredClientRepositoryImpl(
                 input.scopes
             )
             .execute()
+
+    @Transactional
+    fun updateRegisteredClient(input: RegisteredClient): Long =
+        queryFactory
+            .update(registeredClient)
+            .set(registeredClient.clientName, input.clientName)
+            .set(registeredClient.redirectUris, input.redirectUris)
+            .execute()
+
+    @Transactional
+    fun updateRegisteredClientIdInfo(input: RegisteredClient, target: String): Long {
+        val query = queryFactory
+            .update(registeredClient)
+            .where(registeredClient.id.eq(input.id))
+
+        when(target) {
+            // native
+            ReIssueType.NATIVE.code -> {
+                query
+                    .set(registeredClient.nativeClientId, input.nativeClientId)
+                    .set(registeredClient.nativeClientIdIssuedAt, input.nativeClientIdIssuedAt)
+            }
+            // rest
+            ReIssueType.REST.code -> {
+                query
+                    .set(registeredClient.restClientId, input.restClientId)
+                    .set(registeredClient.restClientIdIssuedAt, input.restClientIdIssuedAt)
+            }
+            // js
+            ReIssueType.JAVASCRIPT.code -> {
+                query
+                    .set(registeredClient.jsClientId, input.jsClientId)
+                    .set(registeredClient.jsClientIdIssuedAt, input.jsClientIdIssuedAt)
+            }
+            // admin
+            ReIssueType.ADMIN.code -> {
+                query
+                    .set(registeredClient.adminClientId, input.adminClientId)
+                    .set(registeredClient.adminClientIdIssuedAt, input.adminClientIdIssuedAt)
+            }
+            // client_secret
+            ReIssueType.SECRET.code -> {
+                query
+                    .set(registeredClient.clientSecret, input.clientSecret)
+            }
+        }
+
+        return query.execute()
+    }
 
     @Transactional(readOnly = true)
     fun findRegisteredClientById(clientId: Long): RegisteredClient? =

@@ -150,7 +150,7 @@ class AuthorizationService(
                 authorization.refreshTokenExpiresAt = LocalDateTime.now().plusMonths(2L)
 
                 // 토큰정보 저장
-                authorizationSavePort.tokenInfoRegister(authorization = authorization)
+                authorizationSavePort.tokenInfoRegister(authorization = authorization, hasRefreshToken = true)
 
                 return TokenInfo(
                     token_type = authorization.accessTokenType!!,
@@ -184,6 +184,7 @@ class AuthorizationService(
                 authorization.accessTokenScopes = ""        // TODO: 추후 어떻게 할지 결정
 
                 // refreshToken 만료기간이 1달 이내로 남았을 경우, refreshToken 갱신
+                var hasRefreshToken = false
                 val diff = Period.between(LocalDate.now(), authorization.refreshTokenExpiresAt!!.toLocalDate())
                 if(diff.months < 1) {
                     refreshToken = Base64StringKeyGenerator.generateKey(keyLength = 96)
@@ -192,10 +193,12 @@ class AuthorizationService(
                     authorization.refreshTokenValue = refreshToken
                     authorization.refreshTokenIssuedAt = LocalDateTime.now()
                     authorization.refreshTokenExpiresAt = LocalDateTime.now().plusMonths(2L)
+
+                    hasRefreshToken = true
                 }
 
                 // 토큰정보 저장
-                authorizationSavePort.tokenInfoRegister(authorization = authorization)
+                authorizationSavePort.tokenInfoRegister(authorization = authorization, hasRefreshToken = hasRefreshToken)
 
                 return TokenInfo(
                     token_type = authorization.accessTokenType!!,

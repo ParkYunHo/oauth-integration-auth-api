@@ -4,14 +4,11 @@ import com.john.auth.authorization.application.dto.AuthorizationCodeDto
 import com.john.auth.authorization.application.port.out.AuthorizationFindPort
 import com.john.auth.authorization.application.port.out.AuthorizationSavePort
 import com.john.auth.authorization.domain.Authorization
-import com.john.auth.client.adapter.out.RegisteredClientRepository
 import com.john.auth.client.adapter.out.RegisteredClientRepositoryImpl
 import com.john.auth.client.domain.RegisteredClient
 import com.john.auth.common.exception.InvalidClientException
 import com.john.auth.common.exception.InvalidTokenException
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
 
 /**
  * @author yoonho
@@ -19,9 +16,6 @@ import java.time.LocalDateTime
  */
 @Component
 class AuthorizationPersistenceAdapter(
-//    private val authorizationRepository: AuthorizationRepository,
-//    private val clientRepository: RegisteredClientRepository,
-
     private val authorizationRepositoryImpl: AuthorizationRepositoryImpl,
     private val registeredClientRepositoryImpl: RegisteredClientRepositoryImpl
 ): AuthorizationFindPort, AuthorizationSavePort {
@@ -38,11 +32,6 @@ class AuthorizationPersistenceAdapter(
     override fun checkClient(clientId: String, clientSecret: String): RegisteredClient =
             registeredClientRepositoryImpl.findRegisteredClientByClientInfo(clientId = clientId, clientSecret = clientSecret)
                     ?: throw InvalidClientException()
-//        clientRepository.findByRestClientIdAndClientSecret(
-//            restClientId = clientId,
-//            clientSecret = clientSecret
-//        )
-//            .orElseThrow { throw InvalidClientException() }
 
     /**
      * 인가코드 저장
@@ -52,19 +41,7 @@ class AuthorizationPersistenceAdapter(
      * @since 2023.05.19
      */
     override fun authorizationCodeRegister(input: AuthorizationCodeDto) {
-        authorizationRepositoryImpl.saveAuthorization(input = input)
-//        authorizationRepository.save(
-//            Authorization(
-//                registeredClientId = input.clientId,
-//                principalName = input.userId,
-//                authorizationGrantType = input.grantType,
-//                authorizedScopes = input.scopes,
-//                state = input.state,
-//                authorizationCodeValue = input.authorizationCode,
-//                authorizationCodeIssuedAt = input.authorizationCodeIssuedAt,
-//                authorizationCodeExpiresAt = input.authorizationCodeExpiresAt
-//            )
-//        )
+        authorizationRepositoryImpl.insertAuthorization(input = input)
     }
 
     /**
@@ -77,19 +54,17 @@ class AuthorizationPersistenceAdapter(
     override fun checkAuthorizationCode(clientId: String, authorizationCode: String): Authorization =
             authorizationRepositoryImpl.findAuthorizationByCode(clientId = clientId, code = authorizationCode)
                     ?: throw InvalidTokenException()
-//        authorizationRepository.findByRegisteredClientIdAndAuthorizationCodeValue(registeredClientId = clientId, authorizationCodeValue = authorizationCode)
-//            .orElseThrow { throw InvalidTokenException() }
 
     /**
      * 토큰발급
      *
      * @param authorization [Authorization]
+     * @param hasRefreshToken [Boolean]
      * @author yoonho
      * @since 2023.05.23
      */
-    override fun tokenInfoRegister(authorization: Authorization) {
-        authorizationRepositoryImpl.saveAuthorization(input = authorization)
-//        authorizationRepository.save(authorization)
+    override fun tokenInfoRegister(authorization: Authorization, hasRefreshToken: Boolean) {
+        authorizationRepositoryImpl.updateAuthorizationToken(input = authorization, hasRefreshToken = hasRefreshToken)
     }
 
     /**
@@ -98,12 +73,12 @@ class AuthorizationPersistenceAdapter(
      * @param clientId [String]
      * @param refreshToken [String]
      * @return [Authorization]
+     * @author yoonho
+     * @since 2023.05.23
      */
     override fun checkRefreshToken(clientId: String, refreshToken: String): Authorization =
             authorizationRepositoryImpl.findAuthorizationByRefreshToken(clientId = clientId, refreshToken = refreshToken)
                     ?: throw InvalidTokenException()
-//        authorizationRepository.findByRegisteredClientIdAndRefreshTokenValue(registeredClientId = clientId, refreshTokenValue = refreshToken)
-//            .orElseThrow { throw InvalidTokenException() }
 
     /**
      * AccessToken 체크
@@ -116,8 +91,6 @@ class AuthorizationPersistenceAdapter(
     override fun checkAccessToken(accessToken: String): Authorization =
             authorizationRepositoryImpl.findAuthorizationByAccessToken(accessToken = accessToken)
                     ?: throw InvalidTokenException()
-//        authorizationRepository.findByAccessTokenValue(accessTokenValue = accessToken)
-//            .orElseThrow { throw InvalidTokenException() }
 
     /**
      * 로그아웃
@@ -128,21 +101,6 @@ class AuthorizationPersistenceAdapter(
      * @since 2023.05.27
      */
     override fun logout(userId: String, accessToken: String) {
-//        val authorization = authorizationRepository.findByAccessTokenValue(accessTokenValue = accessToken)
-//                                .orElseThrow { throw InvalidTokenException() }
-
-        val authorization = authorizationRepositoryImpl.findAuthorizationByAccessToken(accessToken = accessToken)
-                ?: throw InvalidTokenException()
-
-        // access_token 만료처리
-        authorization.accessTokenExpiresAt = LocalDateTime.now()
-        // refresh_token 만료처리
-        authorization.refreshTokenExpiresAt = LocalDateTime.now()
-        // authorization_code 만료처리
-        authorization.authorizationCodeExpiresAt = LocalDateTime.now()
-
-
-//        authorizationRepository.save(authorization)
-        authorizationRepositoryImpl.saveAuthorization(input = authorization)
+        authorizationRepositoryImpl.updateAuthorizationExpiredAt(accessToken = accessToken)
     }
 }

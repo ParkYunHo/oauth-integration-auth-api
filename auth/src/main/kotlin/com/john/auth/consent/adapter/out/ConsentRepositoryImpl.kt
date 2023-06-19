@@ -27,8 +27,8 @@ class ConsentRepositoryImpl(
         queryFactory
             .selectFrom(consent)
             .where(
-                consent.consentPk.registeredClientId.eq(clientId),
-                consent.consentPk.principalName.eq(userId)
+                consent.registeredClientId.eq(clientId),
+                consent.principalName.eq(userId)
             )
             .fetchFirst()
 
@@ -37,8 +37,8 @@ class ConsentRepositoryImpl(
         queryFactory
             .insert(consent)
             .columns(
-                consent.consentPk.registeredClientId,
-                consent.consentPk.principalName,
+                consent.registeredClientId,
+                consent.principalName,
                 consent.authorities
             )
             .values(

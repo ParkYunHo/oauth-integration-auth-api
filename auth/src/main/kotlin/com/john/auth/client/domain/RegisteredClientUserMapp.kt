@@ -14,7 +14,7 @@ import java.time.LocalDateTime
  * @since 2023.05.12
  */
 @Entity
-@Table(name = "OAUTH2_REGISTERED_CLIENT_USER_MAPP")
+@Table(catalog = "MP_CMS", name = "OAUTH2_REGISTERED_CLIENT_USER_MAPP")
 class RegisteredClientUserMapp(
     @Id
     @Column(name = "APP_USER_ID", nullable = false)

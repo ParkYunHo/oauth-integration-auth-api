@@ -11,10 +11,16 @@ import org.hibernate.annotations.Comment
  * @since 2023.05.19
  */
 @Entity
-@Table(name = "OAUTH2_AUTHORIZATION_CONSENT")
+@Table(catalog = "MP_CMS", name = "OAUTH2_AUTHORIZATION_CONSENT")
 class Consent(
-    @EmbeddedId
-    val consentPk: ConsentPk,
+    @Id
+    @Column(name = "REGISTERED_CLIENT_ID", nullable = false)
+    @Comment("등록된 클라이언트 ID")
+    val registeredClientId: String = "",
+    @Id
+    @Column(name = "PRINCIPAL_NAME", nullable = false)
+    @Comment("사용자 명")
+    val principalName: String = "",
 
     @Column(name = "AUTHORITIES", nullable = false)
     @Comment("권한범위")

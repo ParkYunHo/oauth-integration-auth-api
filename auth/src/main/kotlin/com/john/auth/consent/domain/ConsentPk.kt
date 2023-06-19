@@ -2,6 +2,7 @@ package com.john.auth.consent.domain
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Comment
+import java.io.Serializable
 
 /**
  * 정보제공동의 정보 Primary Key
@@ -18,4 +19,4 @@ class ConsentPk(
     @Column(name = "PRINCIPAL_NAME", nullable = false)
     @Comment("사용자 명")
     val principalName: String = "",
-)
+): Serializable

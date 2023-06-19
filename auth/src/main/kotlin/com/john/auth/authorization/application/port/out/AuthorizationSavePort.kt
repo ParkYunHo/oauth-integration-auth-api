@@ -22,10 +22,11 @@ interface AuthorizationSavePort {
      * 토큰발급
      *
      * @param authorization [Authorization]
+     * @param hasRefreshToken [Boolean]
      * @author yoonho
      * @since 2023.05.23
      */
-    fun tokenInfoRegister(authorization: Authorization)
+    fun tokenInfoRegister(authorization: Authorization, hasRefreshToken: Boolean)
 
     /**
      * 로그아웃

@@ -5,6 +5,7 @@ import com.john.auth.client.domain.QRegisteredClientUserMapp
 import com.john.auth.client.domain.RegisteredClient
 import com.john.auth.client.domain.RegisteredClientUserMapp
 import com.john.auth.common.repository.PocRepository
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
@@ -49,22 +50,27 @@ class RegisteredClientUserMappRepositoryImpl(
             .where(registeredClientUserMapp.appUserId.eq(appUserId))
             .execute()
 
+
     @Transactional(readOnly = true)
-    fun findRegisteredUserMappByClientIdAndUserId(clientId: String, userId: String): RegisteredClientUserMapp? =
+    fun findRegisteredUserMapp(clientId: String, userId: String, appUserId: String): RegisteredClientUserMapp? =
         queryFactory
             .selectFrom(registeredClientUserMapp)
             .where(
-                registeredClientUserMapp.clientId.eq(clientId),
-                registeredClientUserMapp.userId.eq(userId)
+                this.eqClientId(clientId = clientId),
+                this.eqUserId(userId = userId),
+                this.eqAppUserId(appUserId = appUserId)
             )
             .fetchFirst()
 
-    @Transactional(readOnly = true)
-    fun findRegisteredUserMappByClientIdAndUserId(appUserId: String): RegisteredClientUserMapp? =
-        queryFactory
-            .selectFrom(registeredClientUserMapp)
-            .where(
-                registeredClientUserMapp.appUserId.eq(appUserId)
-            )
-            .fetchFirst()
+    private fun eqClientId(clientId: String): BooleanExpression? =
+        if(clientId.isEmpty()) null
+        else registeredClientUserMapp.clientId.eq(clientId)
+
+    private fun eqUserId(userId: String): BooleanExpression? =
+        if(userId.isEmpty()) null
+        else registeredClientUserMapp.userId.eq(userId)
+
+    private fun eqAppUserId(appUserId: String): BooleanExpression? =
+        if(appUserId.isEmpty()) null
+        else registeredClientUserMapp.appUserId.eq(appUserId)
 }

@@ -16,8 +16,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 class ConsentPersistenceAdapter(
-//    private val consentRepository: ConsentRepository,
-
     private val consentRepositoryImpl: ConsentRepositoryImpl
 ): ConsentFindPort, ConsentSavePort {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -31,13 +29,6 @@ class ConsentPersistenceAdapter(
      * @since 2023.05.19
      */
     override fun findConsent(input: AuthorizationCodeRedirectInput): Boolean {
-//        val registeredConsent = consentRepository.findById(
-//            ConsentPk(
-//                registeredClientId = input.client_id,
-//                principalName = input.userId!!
-//            )
-//        )
-
         val registeredConsent = consentRepositoryImpl.findConsent(clientId = input.client_id, userId = input.userId!!)
 
         if(registeredConsent == null) {
@@ -62,14 +53,5 @@ class ConsentPersistenceAdapter(
      */
     override fun saveConsent(input: AuthorizationCodeRedirectInput) {
         consentRepositoryImpl.saveConsent(input = input)
-//        consentRepository.save(
-//            Consent(
-//                consentPk = ConsentPk(
-//                    registeredClientId = input.client_id,
-//                    principalName = input.userId!!
-//                ),
-//                authorities = input.scope
-//            )
-//        )
     }
 }
