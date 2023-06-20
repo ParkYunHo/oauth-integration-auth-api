@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - 'v**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Gradle with JIB
+        run: ./gradlew jib
