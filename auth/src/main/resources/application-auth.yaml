@@ -1,4 +1,3 @@
-
 server:
   port: 9000
 spring:
@@ -53,8 +52,8 @@ vault:
   uri: http://localhost:8200
   token:
   app-role:
-    role-id: 9f85afd3-01cc-5e53-17e8-d408addbd711
-    secret-id: f6b4049b-e191-35df-de8f-484a875854bf
+    role-id: ff40ec6f-3120-7a01-b114-7a6a34fa497b
+    secret-id: 4d64cbeb-6c66-7136-7766-701cbd0856d7
   secret:
     appconfig: oauth2-app/local
 
